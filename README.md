@@ -1,6 +1,6 @@
 # ids
 
-![CI](https://github.com/lrosa007/ids/workflows/CI/badge.svg?branch=main)
+![CI](https://github.com/lrosa007/ids/workflows/test/badge.svg?branch=main)
 
 ✨ Unique IDs for Gleam
 
