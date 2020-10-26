@@ -9,6 +9,7 @@ import gleam/string
 
 pub opaque type Message {
   Generate(Sender(String))
+  GenerateSlug(Sender(String))
 }
 
 pub opaque type State {
@@ -23,31 +24,66 @@ pub fn gen(channel: Sender(Message)) -> String {
   actor.call(channel, Generate, 1000)
 }
 
+pub fn is_cuid(id: String) -> Bool {
+  string.starts_with(id, "c")
+}
+
+pub fn slug(channel: Sender(Message)) -> String {
+  actor.call(channel, GenerateSlug, 1000)
+}
+
+pub fn is_slug(slug: String) {
+  let slug_length = string.length(slug)
+
+  slug_length >= 7 && slug_length <= 10
+}
+
+const base: Int = 36
+
 fn handle_msg(msg: Message, state: State) {
   case msg {
     Generate(reply) -> {
       let id =
-        [
+        format_id([
           "c",
           timestamp(),
           format_count(state.count),
           state.fingerprint,
           random_block(),
           random_block(),
-        ]
-        |> string.concat()
-        |> string.lowercase()
+        ])
       actor.send(reply, id)
+      Continue(State(..state, count: new_count(state.count)))
+    }
+    GenerateSlug(reply) -> {
+      let slug =
+        format_id([
+          timestamp()
+          |> string.slice(-2, 2),
+          format_count(state.count)
+          |> string.slice(-4, 4),
+          string.concat([
+            string.slice(state.fingerprint, 0, 1),
+            string.slice(state.fingerprint, -1, 1),
+          ]),
+          random_block()
+          |> string.slice(-2, 2),
+        ])
+      actor.send(reply, slug)
       Continue(State(..state, count: new_count(state.count)))
     }
   }
 }
 
-const base: Int = 36
-
 const block_size: Int = 4
 
 const discrete_values: Int = 1_679_616
+
+fn format_id(id_data: List(String)) -> String {
+  id_data
+  |> string.concat()
+  |> string.lowercase()
+}
 
 fn new_count(count: Int) -> Int {
   case count < discrete_values {

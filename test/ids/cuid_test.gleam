@@ -6,19 +6,62 @@ import gleam/map
 import gleam/order
 import gleam/pair
 import gleam/should
+import gleam/string
+
+pub fn gen_test() {
+  assert Ok(channel) = cuid.start()
+
+  fn() { cuid.gen(channel) }
+  |> check_collision()
+  |> should.be_true()
+
+  cuid.gen(channel)
+  |> string.starts_with("c")
+  |> should.be_true()
+}
+
+pub fn is_cuid_test() {
+  "random"
+  |> cuid.is_cuid()
+  |> should.be_false()
+
+  "ckgr2o7lm0000ygenmx3pnnuf"
+  |> cuid.is_cuid()
+  |> should.be_true()
+}
+
+pub fn slug_test() {
+  assert Ok(channel) = cuid.start()
+
+  fn() { cuid.slug(channel) }
+  |> check_collision()
+  |> should.be_true()
+
+  cuid.slug(channel)
+  |> cuid.is_slug()
+  |> should.be_true()
+}
+
+pub fn is_slug_test() {
+  "random"
+  |> cuid.is_slug()
+  |> should.be_false()
+
+  "12345678"
+  |> cuid.is_slug()
+  |> should.be_true()
+}
 
 const start: Int = 0
 
 const max: Int = 100_000
 
-pub fn gen_test() {
-  assert Ok(channel) = cuid.start()
-
+fn check_collision(func: fn() -> String) -> Bool {
   start
   |> iterator.unfold(with: fn(acc) {
     case acc < max {
       False -> Done
-      True -> Next(element: cuid.gen(channel), accumulator: acc + 1)
+      True -> Next(element: func(), accumulator: acc + 1)
     }
   })
   |> iterator.fold(
@@ -37,5 +80,4 @@ pub fn gen_test() {
     },
   )
   |> pair.second()
-  |> should.be_true()
 }
