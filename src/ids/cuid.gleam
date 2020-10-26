@@ -38,7 +38,7 @@ fn handle_msg(msg: Message, state: State) {
         |> string.concat()
         |> string.lowercase()
       actor.send(reply, id)
-      Continue(State(..state, count: state.count + 1))
+      Continue(State(..state, count: new_count(state.count)))
     }
   }
 }
@@ -48,6 +48,13 @@ const base: Int = 36
 const block_size: Int = 4
 
 const discrete_values: Int = 1_679_616
+
+fn new_count(count: Int) -> Int {
+  case count < discrete_values {
+    True -> count + 1
+    False -> 0
+  }
+}
 
 fn timestamp() -> String {
   let secs = os.system_time(Millisecond)
