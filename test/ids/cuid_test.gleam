@@ -1,5 +1,7 @@
 import ids/cuid
-import gleam/io
+import gleam/int
+import gleam/iterator.{Next}
+import gleam/list
 import gleam/order
 import gleam/should
 import gleam/string
@@ -7,18 +9,16 @@ import gleam/string
 pub fn gen_test() {
   assert Ok(channel) = cuid.start()
 
-  let id = cuid.gen(channel)
-  let id2 = cuid.gen(channel)
+  let ids =
+    Nil
+    |> iterator.unfold(with: fn(acc) {
+      Next(element: cuid.gen(channel), accumulator: acc)
+    })
+    |> iterator.take(2_000)
 
-  id
-  |> string.starts_with("c")
-  |> should.be_true()
+  let unique_ids = list.unique(ids)
 
-  id2
-  |> string.starts_with("c")
-  |> should.be_true()
-
-  id
-  |> string.compare(id2)
-  |> should.not_equal(order.Eq)
+  list.length(ids)
+  |> int.compare(list.length(unique_ids))
+  |> should.equal(order.Eq)
 }
