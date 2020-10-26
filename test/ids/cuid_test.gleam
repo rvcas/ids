@@ -1,23 +1,29 @@
 import ids/cuid
 import gleam/int
-import gleam/iterator.{Next}
+import gleam/iterator.{Done, Next}
 import gleam/list
+import gleam/map
 import gleam/order
 import gleam/should
+
+const max: Int = 200_000
 
 pub fn gen_test() {
   assert Ok(channel) = cuid.start()
 
   let ids =
-    Nil
-    |> iterator.unfold(with: fn(acc) {
-      Next(element: cuid.gen(channel), accumulator: acc)
-    })
-    |> iterator.take(2_000)
+    map.new()
+    |> iterator.unfold(with: fn(id_map) {
+      let id = cuid.gen(channel)
 
-  let unique_ids = list.unique(ids)
+      case map.get(id_map, id) {
+        Ok(_) -> Done
+        Error(_) -> Next(element: Nil, accumulator: map.insert(id_map, id, id))
+      }
+    })
+    |> iterator.take(max)
 
   list.length(ids)
-  |> int.compare(list.length(unique_ids))
+  |> int.compare(max)
   |> should.equal(order.Eq)
 }
