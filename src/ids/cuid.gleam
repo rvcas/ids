@@ -1,13 +1,13 @@
 import gleam/dynamic
 import gleam/int
 import gleam/list
-import gleam/os.{Microsecond}
+import gleam/os.{Millisecond}
 import gleam/otp/actor.{Continue, StartResult}
 import gleam/otp/process.{Sender}
 import gleam/otp/system
 import gleam/string
 
-pub type Message {
+pub opaque type Message {
   Increment
 }
 
@@ -50,9 +50,9 @@ const block_size: Int = 4
 const discrete_values: Int = 1_679_616
 
 fn timestamp() -> String {
-  let secs = os.system_time(Microsecond)
+  let secs = os.system_time(Millisecond)
 
-  secs % discrete_values * discrete_values
+  secs
   |> int.to_base_string(base)
 }
 
@@ -69,9 +69,6 @@ external fn os_getpid() -> CharList =
 
 external fn char_list_to_string(CharList) -> String =
   "erlang" "list_to_binary"
-
-external fn string_to_char_list(String) -> CharList =
-  "erlang" "binary_to_list"
 
 external fn net_adm_localhost() -> List(Int) =
   "net_adm" "localhost"
