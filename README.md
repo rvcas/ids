@@ -1,6 +1,8 @@
 # ids
 
-A Gleam program
+![CI](https://github.com/lrosa007/ids/workflows/CI/badge.svg?branch=main)
+
+✨ Unique IDs for Gleam
 
 
 ## Quick start
