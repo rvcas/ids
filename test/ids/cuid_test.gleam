@@ -10,6 +10,9 @@ pub fn gen_test() {
   let id = cuid.gen(channel)
   let id2 = cuid.gen(channel)
 
+  io.debug(id)
+  io.debug(id2)
+
   id
   |> string.starts_with("c")
   |> should.be_true()
