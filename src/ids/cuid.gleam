@@ -8,38 +8,38 @@ import gleam/otp/system
 import gleam/string
 
 pub opaque type Message {
-  Increment
+  Generate(Sender(String))
+}
+
+pub opaque type State {
+  State(count: Int, fingerprint: String)
 }
 
 pub fn start() -> StartResult(Message) {
-  actor.start(0, handle_msg)
+  actor.start(State(0, get_fingerprint()), handle_msg)
 }
 
 pub fn gen(channel: Sender(Message)) -> String {
-  let state =
-    channel
-    |> process.pid()
-    |> system.get_state()
-
-  let Ok(count) = dynamic.int(state)
-
-  actor.send(channel, Increment)
-
-  [
-    "c",
-    timestamp(),
-    format_count(count),
-    fingerprint(),
-    random_block(),
-    random_block(),
-  ]
-  |> string.concat()
-  |> string.lowercase()
+  actor.call(channel, Generate, 1000)
 }
 
-fn handle_msg(msg: Message, state: Int) {
+fn handle_msg(msg: Message, state: State) {
   case msg {
-    Increment -> Continue(state + 1)
+    Generate(reply) -> {
+      let id =
+        [
+          "c",
+          timestamp(),
+          format_count(state.count),
+          state.fingerprint,
+          random_block(),
+          random_block(),
+        ]
+        |> string.concat()
+        |> string.lowercase()
+      actor.send(reply, id)
+      Continue(State(..state, count: state.count + 1))
+    }
   }
 }
 
@@ -73,7 +73,7 @@ external fn char_list_to_string(CharList) -> String =
 external fn net_adm_localhost() -> List(Int) =
   "net_adm" "localhost"
 
-fn fingerprint() -> String {
+fn get_fingerprint() -> String {
   let operator = base * base
   let Ok(pid) =
     os_getpid()
