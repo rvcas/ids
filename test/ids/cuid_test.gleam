@@ -4,7 +4,6 @@ import gleam/iterator.{Next}
 import gleam/list
 import gleam/order
 import gleam/should
-import gleam/string
 
 pub fn gen_test() {
   assert Ok(channel) = cuid.start()
