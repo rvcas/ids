@@ -1,3 +1,21 @@
+//// Generating a cuid. The implementation requires a counter,
+//// so an actor is used to keep track of that state. This means
+//// before generating a cuid, an actor needs to be started and all
+//// work is done via a channel.
+////
+//// Slugs are also supported.
+////
+//// ### Usage
+//// ```gleam
+//// import ids/cuid
+////
+//// assert Ok(channel) = cuid.start()
+////
+//// let id = cuid.gen(channel)
+////
+//// let slug = cuid.slug(channel)
+//// ```
+
 import gleam/dynamic
 import gleam/int
 import gleam/list
@@ -7,31 +25,43 @@ import gleam/otp/process.{Sender}
 import gleam/otp/system
 import gleam/string
 
+/// The messages handled by the actor.
+///
+/// The actor shouldn't be called directly so this type is opaque.
 pub opaque type Message {
   Generate(Sender(String))
   GenerateSlug(Sender(String))
 }
 
+/// The internal state of the actor.
+///
+/// The state keeps track of a counter and a fingerprint.
+/// Both are used when generating a cuid.
 pub opaque type State {
   State(count: Int, fingerprint: String)
 }
 
+/// Starts a cuid generator.
 pub fn start() -> StartResult(Message) {
   actor.start(State(0, get_fingerprint()), handle_msg)
 }
 
+/// Generates a cuid using the given channel.
 pub fn gen(channel: Sender(Message)) -> String {
   actor.call(channel, Generate, 1000)
 }
 
+/// Checks if a string is a cuid.
 pub fn is_cuid(id: String) -> Bool {
   string.starts_with(id, "c")
 }
 
+/// Generates a slug using the given channel.
 pub fn slug(channel: Sender(Message)) -> String {
   actor.call(channel, GenerateSlug, 1000)
 }
 
+/// Checks if a string is a slug.
 pub fn is_slug(slug: String) {
   let slug_length = string.length(slug)
 
