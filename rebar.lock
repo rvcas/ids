@@ -1,12 +1,11 @@
 {"1.2.0",
-[{<<"gleam_otp">>,
-  {git,"https://github.com/gleam-lang/otp",
-       {ref,"c4dc57a61d408f3f654e77372b63a77eb66ce2c6"}},
-  0},
+[{<<"gleam_otp">>,{pkg,<<"gleam_otp">>,<<"0.1.1">>},0},
  {<<"gleam_stdlib">>,{pkg,<<"gleam_stdlib">>,<<"0.11.0">>},0}]}.
 [
 {pkg_hash,[
+ {<<"gleam_otp">>, <<"47B4E90E0D800EC49BD6D2BA2F29D1DA5F2CEAEAFF93BCC0ABF71915793AF2E3">>},
  {<<"gleam_stdlib">>, <<"9B1089739574CDF78A1C25A463D770A98F59E63A92324D17095AD67E867EE549">>}]},
 {pkg_hash_ext,[
+ {<<"gleam_otp">>, <<"6BDF5729B74278D6F63779D4464C036DFBF1687863A338BB7CD0C4A0C4863A17">>},
  {<<"gleam_stdlib">>, <<"5508E169E20369FC8D400481D3F37CCB2CFD880509F63D6E2B6D85F939BC991B">>}]}
 ].
