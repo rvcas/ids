@@ -4,20 +4,14 @@
 
 ✨ Unique IDs for Gleam
 
+## Supported
 
-## Quick start
+- [cuid](https://github.com/ericelliott/cuid)
 
-```sh
-# Build the project
-rebar3 compile
+## Coming Soon
 
-# Run the eunit tests
-rebar3 eunit
-
-# Run the Erlang REPL
-rebar3 shell
-```
-
+- [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)
+- [nanoid](https://github.com/ai/nanoid)
 
 ## Installation
 
@@ -29,3 +23,8 @@ this package can be installed by adding `ids` to your `rebar.config` dependencie
     ids
 ]}.
 ```
+
+## References
+
+1. [original cuid](https://en.wikipedia.org/wiki/Universally_unique_identifier)
+2. [elixir cuid](https://github.com/duailibe/cuid)
