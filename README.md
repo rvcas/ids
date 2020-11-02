@@ -4,6 +4,8 @@
 
 ✨ Unique IDs for Gleam
 
+[read the docs](https://hexdocs.pm/ids/)
+
 ## Supported
 
 - [cuid](https://github.com/ericelliott/cuid)
