@@ -1,6 +1,6 @@
 {application, ids,
  [{description, "Unique IDs for Gleam"},
-  {vsn, "0.0.1"},
+  {vsn, "0.1.0"},
   {registered, []},
   {applications,
    [kernel,
@@ -12,5 +12,5 @@
 
   {include_files, ["gleam.toml", "gen"]},
   {licenses, ["Apache 2.0"]},
-  {links, [{"Github", "https://github.com/lrosa007/ids"}]}
+  {links, [{"Github", "https://github.com/rvcas/ids"}]}
 ]}.
