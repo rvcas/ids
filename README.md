@@ -9,10 +9,10 @@
 ## Supported
 
 - [cuid](https://github.com/ericelliott/cuid)
+- [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)
 
 ## Coming Soon
 
-- [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)
 - [nanoid](https://github.com/ai/nanoid)
 
 ## Installation
@@ -30,3 +30,4 @@ this package can be installed by adding `ids` to your `rebar.config` dependencie
 
 1. [original cuid](https://en.wikipedia.org/wiki/Universally_unique_identifier)
 2. [elixir cuid](https://github.com/duailibe/cuid)
+3. [Ecto UUID](https://github.com/elixir-ecto/ecto/blob/v3.5.4/lib/ecto/uuid.ex)

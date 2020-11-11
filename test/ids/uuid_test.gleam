@@ -13,7 +13,7 @@ pub fn gen_test() {
     _:size(32),
     45,
     _:size(96),
-  >> = uuid.gen()
+  >> = uuid.v4()
 
   should.be_true(True)
 }

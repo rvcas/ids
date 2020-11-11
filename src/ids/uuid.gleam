@@ -1,6 +1,19 @@
+//// Generating (random) UUIDs
+////
+//// Supports multiple versions.
+////
+//// ### Usage
+//// ```gleam
+//// import ids/uuid
+////
+////
+//// let id = cuid.v4()
+//// ```
+
 import gleam/bit_string
 
-pub fn gen() -> String {
+/// Generates a version 4 (random) UUID.
+pub fn v4() -> String {
   let <<u0:size(48), _:size(4), u1:size(12), _:size(2), u2:size(62)>> =
     crypto_strong_rand_bytes(16)
 
