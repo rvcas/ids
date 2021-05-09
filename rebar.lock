@@ -1,11 +1,11 @@
 {"1.2.0",
 [{<<"gleam_otp">>,{pkg,<<"gleam_otp">>,<<"0.1.4">>},0},
- {<<"gleam_stdlib">>,{pkg,<<"gleam_stdlib">>,<<"0.13.0">>},0}]}.
+ {<<"gleam_stdlib">>,{pkg,<<"gleam_stdlib">>,<<"0.15.0">>},0}]}.
 [
 {pkg_hash,[
  {<<"gleam_otp">>, <<"68ADB5A9EDE026804AF8CB7D3826859094529CD7B6DA4AC5FC6BEC7B53A62A80">>},
- {<<"gleam_stdlib">>, <<"604A40E0FBE6C688651A5AD5E892913ED314AB626D18D361A7FD8BF367907551">>}]},
+ {<<"gleam_stdlib">>, <<"7979CDEA88D206250845F129A342C82FB04DA5DFD4ECE3CC5C6A1E3983117D15">>}]},
 {pkg_hash_ext,[
  {<<"gleam_otp">>, <<"C36B2709E1703CE8582CDC4058E332A9BF8A2A4517E1813F0C761355C83E924B">>},
- {<<"gleam_stdlib">>, <<"35A005F4DACA2775687E46F4E20CEC799563A698A16F8BCC0CF281522AD717F1">>}]}
+ {<<"gleam_stdlib">>, <<"22B54D25271227B20E28B3DB341E39FEB04DB88D10A01AA7537F5FFD428CB0D2">>}]}
 ].

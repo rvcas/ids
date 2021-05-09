@@ -118,5 +118,5 @@ fn e(n: Int) -> Int {
   }
 }
 
-external fn crypto_strong_rand_bytes(Int) -> String =
+external fn crypto_strong_rand_bytes(Int) -> BitString =
   "crypto" "strong_rand_bytes"
