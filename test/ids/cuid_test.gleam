@@ -65,16 +65,16 @@ fn check_collision(func: fn() -> String) -> Bool {
     }
   })
   |> iterator.fold(
-    from: tuple(map.new(), True),
+    from: #(map.new(), True),
     with: fn(id, acc) {
-      let tuple(id_map, flag) = acc
+      let #(id_map, flag) = acc
 
       case flag {
         False -> acc
         True ->
           case map.get(id_map, id) {
-            Ok(_) -> tuple(id_map, False)
-            Error(_) -> tuple(map.insert(id_map, id, id), True)
+            Ok(_) -> #(id_map, False)
+            Error(_) -> #(map.insert(id_map, id, id), True)
           }
       }
     },
