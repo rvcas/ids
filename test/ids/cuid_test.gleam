@@ -1,4 +1,3 @@
-import gleeunit
 import gleeunit/should
 import ids/cuid
 import gleam/int
@@ -8,10 +7,6 @@ import gleam/map
 import gleam/order
 import gleam/pair
 import gleam/string
-
-pub fn main() {
-  gleeunit.main()
-}
 
 pub fn gen_test() {
   assert Ok(channel) = cuid.start()
@@ -71,7 +66,7 @@ fn check_collision(func: fn() -> String) -> Bool {
   })
   |> iterator.fold(
     from: #(map.new(), True),
-    with: fn(id, acc) {
+    with: fn(acc, id) {
       let #(id_map, flag) = acc
 
       case flag {

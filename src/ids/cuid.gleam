@@ -19,7 +19,7 @@
 import gleam/dynamic
 import gleam/int
 import gleam/list
-import gleam/erlang/os.{Millisecond}
+import gleam/erlang.{Millisecond}
 import gleam/otp/actor.{Continue, StartResult}
 import gleam/otp/process.{Sender}
 import gleam/otp/system
@@ -123,15 +123,15 @@ fn new_count(count: Int) -> Int {
 }
 
 fn timestamp() -> String {
-  let secs = os.system_time(Millisecond)
+  let secs = erlang.system_time(Millisecond)
 
   secs
-  |> int.to_base_string(base)
+  |> int.to_base36()
 }
 
 fn format_count(num: Int) {
   num
-  |> int.to_base_string(base)
+  |> int.to_base36()
   |> string.pad_left(to: block_size, with: "0")
 }
 
@@ -163,7 +163,7 @@ fn get_fingerprint() -> String {
   let hostid = { sum + list.length(localhost) + base } % operator
 
   id + hostid
-  |> int.to_base_string(base)
+  |> int.to_base36()
 }
 
 external fn rand_uniform(Int) -> Int =
@@ -171,6 +171,6 @@ external fn rand_uniform(Int) -> Int =
 
 fn random_block() -> String {
   rand_uniform(discrete_values - 1)
-  |> int.to_base_string(base)
+  |> int.to_base36()
   |> string.pad_left(to: block_size, with: "0")
 }
