@@ -1,3 +1,5 @@
+import gleeunit
+import gleeunit/should
 import ids/cuid
 import gleam/int
 import gleam/iterator.{Done, Next}
@@ -5,8 +7,11 @@ import gleam/list
 import gleam/map
 import gleam/order
 import gleam/pair
-import gleam/should
 import gleam/string
+
+pub fn main() {
+  gleeunit.main()
+}
 
 pub fn gen_test() {
   assert Ok(channel) = cuid.start()

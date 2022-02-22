@@ -19,7 +19,7 @@
 import gleam/dynamic
 import gleam/int
 import gleam/list
-import gleam/os.{Millisecond}
+import gleam/erlang/os.{Millisecond}
 import gleam/otp/actor.{Continue, StartResult}
 import gleam/otp/process.{Sender}
 import gleam/otp/system

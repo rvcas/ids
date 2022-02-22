@@ -1,1 +1,3 @@
 name = "ids"
+dependencies = { gleam_stdlib = "~> 0.19", gleam_otp = "~> 0.3", gleam_erlang = "~> 0.9" }
+dev-dependencies = { gleeunit = "~> 0.6" }
