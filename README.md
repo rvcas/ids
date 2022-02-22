@@ -18,12 +18,10 @@
 ## Installation
 
 If [available in Hex](https://www.rebar3.org/docs/dependencies#section-declaring-dependencies)
-this package can be installed by adding `ids` to your `rebar.config` dependencies:
+this package can be installed by adding `ids` to your `gleam.toml` dependencies:
 
-```erlang
-{deps, [
-    ids
-]}.
+```sh
+gleam add ids
 ```
 
 ## References
