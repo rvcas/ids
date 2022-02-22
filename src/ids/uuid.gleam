@@ -13,7 +13,7 @@
 import gleam/bit_string
 
 /// Generates a version 4 (random) UUID.
-pub fn v4() -> String {
+pub fn v4() -> Result(String, Nil) {
   let <<u0:size(48), _:size(4), u1:size(12), _:size(2), u2:size(62)>> =
     crypto_strong_rand_bytes(16)
 
@@ -91,10 +91,7 @@ pub fn v4() -> String {
     e(e12),
   >>
 
-  case bit_string.to_string(id) {
-    Ok(id_string) -> id_string
-    _ -> ""
-  }
+  bit_string.to_string(id)
 }
 
 fn e(n: Int) -> Int {

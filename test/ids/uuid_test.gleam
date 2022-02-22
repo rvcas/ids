@@ -4,6 +4,8 @@ import gleam/bit_string
 import gleam/io
 
 pub fn gen_test() {
+  let Ok(id) = uuid.v4()
+
   assert <<
     _:size(64),
     45,
@@ -14,9 +16,7 @@ pub fn gen_test() {
     _:size(32),
     45,
     _:size(96),
-  >> =
-    uuid.v4()
-    |> bit_string.from_string()
+  >> = bit_string.from_string(id)
 
   should.be_true(True)
 }
