@@ -148,7 +148,7 @@ external fn net_adm_localhost() -> List(Int) =
 
 fn get_fingerprint() -> String {
   let operator = base * base
-  let Ok(pid) =
+  assert Ok(pid) =
     os_getpid()
     |> char_list_to_string()
     |> int.parse()
