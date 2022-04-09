@@ -4,7 +4,7 @@ import gleam/bit_string
 import gleam/io
 
 pub fn gen_test() {
-  let Ok(id) = uuid.v4()
+  assert Ok(id) = uuid.v4()
 
   assert <<
     _:size(64),
