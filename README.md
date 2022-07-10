@@ -10,9 +10,6 @@
 
 - [cuid](https://github.com/ericelliott/cuid)
 - [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)
-
-## Coming Soon
-
 - [nanoid](https://github.com/ai/nanoid)
 
 ## Installation
