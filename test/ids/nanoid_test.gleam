@@ -11,7 +11,7 @@ pub fn main() {
 }
 
 // Set the number of NanoIDs to generate and validate
-const n: Int = 25_000
+const n: Int = 10_000
 
 pub fn nanoid_test() {
   let gen_nanoids =
