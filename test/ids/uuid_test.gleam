@@ -1,7 +1,6 @@
 import gleeunit/should
 import ids/uuid
 import gleam/bit_string
-import gleam/io
 
 pub fn gen_test() {
   assert Ok(id) = uuid.v4()

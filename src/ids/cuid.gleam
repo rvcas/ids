@@ -16,13 +16,11 @@
 //// let slug = cuid.slug(channel)
 //// ```
 
-import gleam/dynamic
 import gleam/int
 import gleam/list
 import gleam/erlang.{Millisecond}
 import gleam/otp/actor.{Continue, StartResult}
 import gleam/otp/process.{Sender}
-import gleam/otp/system
 import gleam/string
 
 /// The messages handled by the actor.
