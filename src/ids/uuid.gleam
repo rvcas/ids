@@ -1,4 +1,4 @@
-//// A module for generating a UUID (Universally Unique Identifier).
+//// A module for generating UUIDs (Universally Unique Identifiers).
 ////
 //// The module currently supports UUID versions:
 //// - Version 4 (random)

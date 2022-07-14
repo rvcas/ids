@@ -5,7 +5,7 @@ import gleam/map
 import gleam/pair
 import gleam/string
 
-pub fn generate_test() {
+pub fn gen_test() {
   assert Ok(channel) = cuid.start()
 
   fn() { cuid.generate(channel) }
