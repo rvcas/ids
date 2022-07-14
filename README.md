@@ -1,21 +1,20 @@
 # ids
 
 ![CI](https://github.com/lrosa007/ids/workflows/test/badge.svg?branch=main)
+[![Package Version](https://img.shields.io/hexpm/v/ids)](https://hex.pm/packages/ids)
+[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/ids/)
 
 ✨ Unique IDs for Gleam
 
-[read the docs](https://hexdocs.pm/ids/)
-
 ## Supported
 
-- [cuid](https://github.com/ericelliott/cuid)
+- [CUID](https://github.com/ericelliott/cuid)
 - [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)
-- [nanoid](https://github.com/ai/nanoid)
+- [NanoID](https://github.com/ai/nanoid)
 
 ## Installation
 
-If [available in Hex](https://www.rebar3.org/docs/dependencies#section-declaring-dependencies)
-this package can be installed by adding `ids` to your `gleam.toml` dependencies:
+The library is available on Hex so it can be added to your Gleam project by simply running:
 
 ```sh
 gleam add ids
@@ -23,6 +22,6 @@ gleam add ids
 
 ## References
 
-1. [original cuid](https://en.wikipedia.org/wiki/Universally_unique_identifier)
-2. [elixir cuid](https://github.com/duailibe/cuid)
+1. [Original CUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)
+2. [Elixir CUID](https://github.com/duailibe/cuid)
 3. [Ecto UUID](https://github.com/elixir-ecto/ecto/blob/v3.5.4/lib/ecto/uuid.ex)
