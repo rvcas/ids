@@ -5,14 +5,14 @@ import gleam/map
 import gleam/pair
 import gleam/string
 
-pub fn gen_test() {
+pub fn generate_test() {
   assert Ok(channel) = cuid.start()
 
-  fn() { cuid.gen(channel) }
+  fn() { cuid.generate(channel) }
   |> check_collision()
   |> should.be_true()
 
-  cuid.gen(channel)
+  cuid.generate(channel)
   |> string.starts_with("c")
   |> should.be_true()
 }

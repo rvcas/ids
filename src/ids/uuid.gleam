@@ -1,19 +1,23 @@
-//// Generating (random) UUIDs
+//// A module for generating a UUID (Universally Unique Identifier).
 ////
-//// Supports multiple versions.
+//// The module currently supports UUID versions:
+//// - Version 4 (random)
 ////
-//// ### Usage
-//// ```gleam
-//// import ids/uuid
-////
-////
-//// let id = cuid.v4()
-//// ```
 
 import gleam/bit_string
 
-/// Generates a version 4 (random) UUID.
-pub fn v4() -> Result(String, Nil) {
+/// Generates a version 4 (random) UUID. The version 4 UUID produced
+/// by this function is generated using a cryptographically secure 
+/// random number generator.
+///
+/// ### Usage
+/// ```gleam
+/// import ids/uuid
+///
+/// assert Ok(id) = uuid.generate_v4()
+/// ```
+///
+pub fn generate_v4() -> Result(String, String) {
   let <<u0:size(48), _:size(4), u1:size(12), _:size(2), u2:size(62)>> =
     crypto_strong_rand_bytes(16)
 
@@ -52,7 +56,7 @@ pub fn v4() -> Result(String, Nil) {
     e12:size(4),
   >> = <<u0:size(48), 4:size(4), u1:size(12), 2:size(2), u2:size(62)>>
 
-  let id = <<
+  let bitstr_id = <<
     e(a1),
     e(a2),
     e(a3),
@@ -91,7 +95,16 @@ pub fn v4() -> Result(String, Nil) {
     e(e12),
   >>
 
-  bit_string.to_string(id)
+  case bit_string.to_string(bitstr_id) {
+    Ok(str_id) ->
+      str_id
+      |> Ok
+    Error(_) -> {
+      let error: String = "Error: BitString could not be converted to String."
+      error
+      |> Error
+    }
+  }
 }
 
 fn e(n: Int) -> Int {
