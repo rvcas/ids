@@ -14,9 +14,9 @@ pub fn main() {
 const n: Int = 10_000
 
 pub fn nanoid_test() {
-  let gen_nanoids =
-    list.repeat(<<"":utf8>>, n)
-    |> list.try_map(fn(_v: BitString) -> Result(BitString, String) {
+  let gen_nanoids: Result(List(String), String) =
+    list.repeat("", n)
+    |> list.try_map(fn(_v: String) -> Result(String, String) {
       nanoid.generate()
     })
 
@@ -29,8 +29,9 @@ pub fn nanoid_test() {
 
   // Make sure the generated IDs are non-empty bit strings
   nanoids
-  |> list.all(fn(v: BitString) -> Bool {
-    case bit_string.byte_size(v) > 0 {
+  |> list.all(fn(v: String) -> Bool {
+    let bitstr_v: BitString = bit_string.from_string(v)
+    case bit_string.byte_size(bitstr_v) > 0 {
       True -> True
       False -> False
     }
@@ -39,8 +40,9 @@ pub fn nanoid_test() {
 
   // Make sure the generated IDs have the right size
   nanoids
-  |> list.all(fn(v: BitString) -> Bool {
-    assert Ok(string) = bit_string.to_string(v)
+  |> list.all(fn(v: String) -> Bool {
+    let bitstr_v: BitString = bit_string.from_string(v)
+    assert Ok(string) = bit_string.to_string(bitstr_v)
     let length: Int =
       string
       |> string.length()
@@ -53,10 +55,9 @@ pub fn nanoid_test() {
 
   // Make sure the generated IDs contain the right symbols
   nanoids
-  |> list.all(fn(v: BitString) -> Bool {
-    assert Ok(nanoid_string) = bit_string.to_string(v)
+  |> list.all(fn(v: String) -> Bool {
     assert Ok(alphabet) = bit_string.to_string(nanoid.default_alphabet)
-    nanoid_string
+    v
     |> string.to_graphemes()
     |> list.all(fn(w: String) -> Bool { string.contains(alphabet, w) })
   })
@@ -65,6 +66,6 @@ pub fn nanoid_test() {
   // Make sure the generated IDs are unique i.e., there are no collisions
   nanoids
   |> set.from_list()
-  |> fn(v: Set(BitString)) -> Bool { set.size(v) == list.length(nanoids) }
+  |> fn(v: Set(String)) -> Bool { set.size(v) == list.length(nanoids) }
   |> should.be_true()
 }

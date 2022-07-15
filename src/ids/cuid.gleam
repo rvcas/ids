@@ -1,25 +1,15 @@
-//// Generating a cuid. The implementation requires a counter,
-//// so an actor is used to keep track of that state. This means
-//// before generating a cuid, an actor needs to be started and all
-//// work is done via a channel.
+//// A module for generating CUIDs (Collision-resistant Unique Identifiers).
+//// The implementation requires a counter, so an actor is used to keep track
+//// of that state. This means before generating a CUID, an actor needs to be
+//// started and all work is done via a channel.
 ////
 //// Slugs are also supported.
 ////
-//// ### Usage
-//// ```gleam
-//// import ids/cuid
-////
-//// assert Ok(channel) = cuid.start()
-////
-//// let id = cuid.gen(channel)
-////
-//// let slug = cuid.slug(channel)
-//// ```
 
 import gleam/int
 import gleam/list
 import gleam/erlang.{Millisecond}
-import gleam/otp/actor.{Continue, StartResult}
+import gleam/otp/actor.{Continue, Next, StartResult}
 import gleam/otp/process.{Sender}
 import gleam/string
 
@@ -34,22 +24,33 @@ pub opaque type Message {
 /// The internal state of the actor.
 ///
 /// The state keeps track of a counter and a fingerprint.
-/// Both are used when generating a cuid.
+/// Both are used when generating a CUID.
 pub opaque type State {
   State(count: Int, fingerprint: String)
 }
 
-/// Starts a cuid generator.
+/// Starts a CUID generator.
 pub fn start() -> StartResult(Message) {
   actor.start(State(0, get_fingerprint()), handle_msg)
 }
 
-/// Generates a cuid using the given channel.
-pub fn gen(channel: Sender(Message)) -> String {
+/// Generates a CUID using the given channel.
+///
+/// ### Usage
+/// ```gleam
+/// import ids/cuid
+///
+/// assert Ok(channel) = cuid.start()
+///
+/// let id: String = cuid.generate(channel)
+///
+/// let slug: String = cuid.slug(channel)
+/// ```
+pub fn generate(channel: Sender(Message)) -> String {
   actor.call(channel, Generate, 1000)
 }
 
-/// Checks if a string is a cuid.
+/// Checks if a string is a CUID.
 pub fn is_cuid(id: String) -> Bool {
   string.starts_with(id, "c")
 }
@@ -60,7 +61,7 @@ pub fn slug(channel: Sender(Message)) -> String {
 }
 
 /// Checks if a string is a slug.
-pub fn is_slug(slug: String) {
+pub fn is_slug(slug: String) -> Bool {
   let slug_length = string.length(slug)
 
   slug_length >= 7 && slug_length <= 10
@@ -68,7 +69,7 @@ pub fn is_slug(slug: String) {
 
 const base: Int = 36
 
-fn handle_msg(msg: Message, state: State) {
+fn handle_msg(msg: Message, state: State) -> Next(State) {
   case msg {
     Generate(reply) -> {
       let id =
@@ -127,7 +128,7 @@ fn timestamp() -> String {
   |> int.to_base36()
 }
 
-fn format_count(num: Int) {
+fn format_count(num: Int) -> String {
   num
   |> int.to_base36()
   |> string.pad_left(to: block_size, with: "0")

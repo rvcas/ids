@@ -1,12 +1,6 @@
 //// A module for generating NanoIDs, i.e., tiny, secure, URL-friendly, 
 //// and unique string IDs.
 ////
-//// ### Usage
-//// ```gleam
-//// import ids/nanoid
-////
-//// let nanoid = nanoid.generate()
-//// ```
 
 import gleam/string
 import gleam/bit_string
@@ -14,15 +8,15 @@ import gleam/float
 import gleam/int
 import gleam/list
 
-// Set the default alphabet to use when generating NanoIDs
+/// The default alphabet used when generating NanoIDs.
 pub const default_alphabet: BitString = <<
   "_-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":utf8,
 >>
 
-// Set the default size of the generated NanoIDs 
+/// The default size of the generated NanoIDs. 
 pub const default_size: Int = 21
 
-external fn strong_rand_bytes(Int) -> BitString =
+external fn crypto_strong_rand_bytes(Int) -> BitString =
   "crypto" "strong_rand_bytes"
 
 external fn shift_left(Int, Int) -> Int =
@@ -85,7 +79,7 @@ fn check_alphabet(alphabet: BitString) -> Result(Bool, String) {
 // Internal function for generating a list of cryptographically
 // secure random bytes (represented by a list of ints)
 fn random_bytes(size: Int) -> List(Int) {
-  strong_rand_bytes(size)
+  crypto_strong_rand_bytes(size)
   |> bin_to_list()
 }
 
@@ -114,7 +108,17 @@ fn calculate_step(mask: Int, size: Int, alphabet_length: Int) -> Int {
   float.round(step)
 }
 
-pub fn generate() -> Result(BitString, String) {
+/// Generates a (random) NanoID. The NanoID produced by this function is 
+/// generated using a cryptographically secure random number generator.
+///
+/// ### Usage
+/// ```gleam
+/// import ids/nanoid
+///
+/// assert Ok(id) = nanoid.generate()
+/// ```
+///
+pub fn generate() -> Result(String, String) {
   // TODO: When optional arguments with defaults becomes a thing in Gleam
   //       make it possble to pass an 'alphabet' and 'size'. For now just
   //       use hardcoded defaults...
@@ -126,7 +130,23 @@ pub fn generate() -> Result(BitString, String) {
     Ok(True) -> {
       let mask = calculate_mask(alphabet_length)
       let step = calculate_step(mask, size, alphabet_length)
-      do_generate(size, default_alphabet, mask, step, <<"":utf8>>)
+      case do_generate(size, default_alphabet, mask, step, <<"":utf8>>) {
+        Ok(bitstr_nanoid) ->
+          case bit_string.to_string(bitstr_nanoid) {
+            Ok(str_nanoid) ->
+              str_nanoid
+              |> Ok
+            Error(_) -> {
+              let error: String =
+                "Error: BitString could not be converted to String."
+              error
+              |> Error
+            }
+          }
+        Error(error) ->
+          error
+          |> Error
+      }
     }
     Error(error) ->
       error
