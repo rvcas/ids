@@ -1,5 +1,5 @@
 name = "ids"
-version = "0.4.0"
+version = "0.5.0"
 licences = ["Apache-2.0"]
 description = "✨ Unique IDs for Gleam"
 repository = { type = "github", user = "rvcas", repo = "ids" }
