@@ -10,15 +10,15 @@ import gleam/int
 import gleam/list
 import gleam/erlang.{Millisecond}
 import gleam/otp/actor.{Continue, Next, StartResult}
-import gleam/otp/process.{Sender}
+import gleam/erlang/process.{Subject}
 import gleam/string
 
 /// The messages handled by the actor.
 ///
 /// The actor shouldn't be called directly so this type is opaque.
 pub opaque type Message {
-  Generate(Sender(String))
-  GenerateSlug(Sender(String))
+  Generate(Subject(String))
+  GenerateSlug(Subject(String))
 }
 
 /// The internal state of the actor.
@@ -46,7 +46,7 @@ pub fn start() -> StartResult(Message) {
 ///
 /// let slug: String = cuid.slug(channel)
 /// ```
-pub fn generate(channel: Sender(Message)) -> String {
+pub fn generate(channel: Subject(Message)) -> String {
   actor.call(channel, Generate, 1000)
 }
 
@@ -56,7 +56,7 @@ pub fn is_cuid(id: String) -> Bool {
 }
 
 /// Generates a slug using the given channel.
-pub fn slug(channel: Sender(Message)) -> String {
+pub fn slug(channel: Subject(Message)) -> String {
   actor.call(channel, GenerateSlug, 1000)
 }
 
