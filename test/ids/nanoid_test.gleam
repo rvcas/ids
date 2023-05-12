@@ -25,7 +25,7 @@ pub fn nanoid_test() {
   |> should.be_ok()
 
   // Access list of successfully generated NanoIDs
-  assert Ok(nanoids) = gen_nanoids
+  let assert Ok(nanoids) = gen_nanoids
 
   // Make sure the generated IDs are non-empty bit strings
   nanoids
@@ -42,7 +42,7 @@ pub fn nanoid_test() {
   nanoids
   |> list.all(fn(v: String) -> Bool {
     let bitstr_v: BitString = bit_string.from_string(v)
-    assert Ok(string) = bit_string.to_string(bitstr_v)
+    let assert Ok(string) = bit_string.to_string(bitstr_v)
     let length: Int =
       string
       |> string.length()
@@ -56,7 +56,7 @@ pub fn nanoid_test() {
   // Make sure the generated IDs contain the right symbols
   nanoids
   |> list.all(fn(v: String) -> Bool {
-    assert Ok(alphabet) = bit_string.to_string(nanoid.default_alphabet)
+    let assert Ok(alphabet) = bit_string.to_string(nanoid.default_alphabet)
     v
     |> string.to_graphemes()
     |> list.all(fn(w: String) -> Bool { string.contains(alphabet, w) })

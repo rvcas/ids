@@ -3,9 +3,9 @@ import ids/uuid
 import gleam/bit_string
 
 pub fn gen_test() {
-  assert Ok(id) = uuid.generate_v4()
+  let assert Ok(id) = uuid.generate_v4()
 
-  assert <<
+  let assert <<
     _:size(64),
     45,
     _:size(32),

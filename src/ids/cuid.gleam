@@ -40,7 +40,7 @@ pub fn start() -> StartResult(Message) {
 /// ```gleam
 /// import ids/cuid
 ///
-/// assert Ok(channel) = cuid.start()
+/// let assert Ok(channel) = cuid.start()
 ///
 /// let id: String = cuid.generate(channel)
 ///
@@ -147,7 +147,7 @@ external fn net_adm_localhost() -> List(Int) =
 
 fn get_fingerprint() -> String {
   let operator = base * base
-  assert Ok(pid) =
+  let assert Ok(pid) =
     os_getpid()
     |> char_list_to_string()
     |> int.parse()

@@ -6,7 +6,7 @@ import gleam/pair
 import gleam/string
 
 pub fn gen_test() {
-  assert Ok(channel) = cuid.start()
+  let assert Ok(channel) = cuid.start()
 
   fn() { cuid.generate(channel) }
   |> check_collision()
@@ -28,7 +28,7 @@ pub fn is_cuid_test() {
 }
 
 pub fn slug_test() {
-  assert Ok(channel) = cuid.start()
+  let assert Ok(channel) = cuid.start()
 
   fn() { cuid.slug(channel) }
   |> check_collision()
