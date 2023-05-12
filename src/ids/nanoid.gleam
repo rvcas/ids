@@ -115,7 +115,7 @@ fn calculate_step(mask: Int, size: Int, alphabet_length: Int) -> Int {
 /// ```gleam
 /// import ids/nanoid
 ///
-/// assert Ok(id) = nanoid.generate()
+/// let assert Ok(id) = nanoid.generate()
 /// ```
 ///
 pub fn generate() -> Result(String, String) {
@@ -123,7 +123,7 @@ pub fn generate() -> Result(String, String) {
   //       make it possble to pass an 'alphabet' and 'size'. For now just
   //       use hardcoded defaults...
   let alphabet: BitString = default_alphabet
-  assert Ok(alphabet_string) = bit_string.to_string(alphabet)
+  let assert Ok(alphabet_string) = bit_string.to_string(alphabet)
   let alphabet_length: Int = string.length(alphabet_string)
   let size: Int = default_size
   case check_nanoid_args(size, alphabet) {
@@ -166,7 +166,7 @@ fn do_generate(
   case bit_string.byte_size(acc) >= size {
     // Truncate the generated ID to the desired size
     True -> {
-      assert Ok(nanoid) = bit_string.slice(acc, 0, size)
+      let assert Ok(nanoid) = bit_string.slice(acc, 0, size)
       nanoid
       |> Ok
     }

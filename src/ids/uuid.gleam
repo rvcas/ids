@@ -14,7 +14,7 @@ import gleam/bit_string
 /// ```gleam
 /// import ids/uuid
 ///
-/// assert Ok(id) = uuid.generate_v4()
+/// let assert Ok(id) = uuid.generate_v4()
 /// ```
 ///
 pub fn generate_v4() -> Result(String, String) {
