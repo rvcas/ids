@@ -134,16 +134,16 @@ fn format_count(num: Int) -> String {
   |> string.pad_left(to: block_size, with: "0")
 }
 
-external type CharList
+type CharList
 
-external fn os_getpid() -> CharList =
-  "os" "getpid"
+@external(erlang, "os", "getpid")
+fn os_getpid() -> CharList
 
-external fn char_list_to_string(CharList) -> String =
-  "erlang" "list_to_binary"
+@external(erlang, "erlang", "list_to_binary")
+fn char_list_to_string(cl: CharList) -> String
 
-external fn net_adm_localhost() -> List(Int) =
-  "net_adm" "localhost"
+@external(erlang, "net_adm", "localhost")
+fn net_adm_localhost() -> List(Int)
 
 fn get_fingerprint() -> String {
   let operator = base * base
@@ -165,8 +165,8 @@ fn get_fingerprint() -> String {
   |> int.to_base36()
 }
 
-external fn rand_uniform(Int) -> Int =
-  "rand" "uniform"
+@external(erlang, "rand", "uniform")
+fn rand_uniform(n: Int) -> Int
 
 fn random_block() -> String {
   rand_uniform(discrete_values - 1)

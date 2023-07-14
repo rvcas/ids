@@ -6,6 +6,9 @@
 
 import gleam/bit_string
 
+@external(erlang, "crypto", "strong_rand_bytes")
+fn crypto_strong_rand_bytes(n: Int) -> BitString
+
 /// Generates a version 4 (random) UUID. The version 4 UUID produced
 /// by this function is generated using a cryptographically secure 
 /// random number generator.
@@ -127,6 +130,3 @@ fn e(n: Int) -> Int {
     15 -> 102
   }
 }
-
-external fn crypto_strong_rand_bytes(Int) -> BitString =
-  "crypto" "strong_rand_bytes"

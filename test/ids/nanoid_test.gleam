@@ -14,18 +14,9 @@ pub fn main() {
 const n: Int = 10_000
 
 pub fn nanoid_test() {
-  let gen_nanoids: Result(List(String), String) =
+  let nanoids: List(String) =
     list.repeat("", n)
-    |> list.try_map(fn(_v: String) -> Result(String, String) {
-      nanoid.generate()
-    })
-
-  // Make sure the NanoIDs can be successfully generated
-  gen_nanoids
-  |> should.be_ok()
-
-  // Access list of successfully generated NanoIDs
-  let assert Ok(nanoids) = gen_nanoids
+    |> list.map(fn(_v: String) -> String { nanoid.generate() })
 
   // Make sure the generated IDs are non-empty bit strings
   nanoids

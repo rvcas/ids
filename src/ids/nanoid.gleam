@@ -16,20 +16,109 @@ pub const default_alphabet: BitString = <<
 /// The default size of the generated NanoIDs. 
 pub const default_size: Int = 21
 
-external fn crypto_strong_rand_bytes(Int) -> BitString =
-  "crypto" "strong_rand_bytes"
+@external(erlang, "crypto", "strong_rand_bytes")
+fn crypto_strong_rand_bytes(length: Int) -> BitString
 
-external fn shift_left(Int, Int) -> Int =
-  "erlang" "bsl"
+@external(erlang, "erlang", "bsl")
+fn shift_left(n: Int, s: Int) -> Int
 
-external fn and(Int, Int) -> Int =
-  "erlang" "band"
+@external(erlang, "erlang", "band")
+fn and(left: Int, right: Int) -> Int
 
-external fn bin_to_list(BitString) -> List(Int) =
-  "binary" "bin_to_list"
+@external(erlang, "binary", "bin_to_list")
+fn bin_to_list(b: BitString) -> List(Int)
 
-external fn log(Float) -> Float =
-  "math" "log"
+@external(erlang, "math", "log")
+fn log(f: Float) -> Float
+
+/// Generates a (random) NanoID. The NanoID produced by this function is 
+/// generated using a cryptographically secure random number generator.
+///
+/// ### Usage
+/// ```gleam
+/// import ids/nanoid
+///
+/// let assert Ok(id) = nanoid.generate()
+/// ```
+///
+pub fn generate() -> String {
+  // TODO: When optional arguments with defaults becomes a thing in Gleam
+  //       make it possble to pass an 'alphabet' and 'size'. For now just
+  //       use hardcoded defaults...
+  let alphabet: BitString = default_alphabet
+
+  let assert Ok(alphabet_string) = bit_string.to_string(alphabet)
+
+  let alphabet_length: Int = string.length(alphabet_string)
+
+  let size: Int = default_size
+
+  let assert Ok(True) = check_nanoid_args(size, alphabet)
+
+  let mask = calculate_mask(alphabet_length)
+
+  let step = calculate_step(mask, size, alphabet_length)
+
+  let assert Ok(bitstr_nanoid) =
+    do_generate(size, alphabet, mask, step, <<"":utf8>>)
+
+  let assert Ok(str_nanoid) = bit_string.to_string(bitstr_nanoid)
+
+  str_nanoid
+}
+
+// Recursively generate a NanoID as long as the given size 
+// of the ID has not yet been reached
+fn do_generate(
+  size: Int,
+  alphabet: BitString,
+  mask: Int,
+  step: Int,
+  acc: BitString,
+) -> Result(BitString, String) {
+  case bit_string.byte_size(acc) >= size {
+    // Truncate the generated ID to the desired size
+    True -> {
+      let assert Ok(nanoid) = bit_string.slice(acc, 0, size)
+      nanoid
+      |> Ok
+    }
+    // The NanoID is not yet the desired size, so continue 
+    // building up the ID
+    False ->
+      case generate_nanoid(step, alphabet, mask) {
+        Ok(partial_nanoid) ->
+          bit_string.concat([acc, partial_nanoid])
+          |> do_generate(size, alphabet, mask, step, _)
+        Error(error) ->
+          error
+          |> Error
+      }
+  }
+}
+
+fn generate_nanoid(
+  size: Int,
+  alphabet: BitString,
+  mask: Int,
+) -> Result(BitString, String) {
+  case check_nanoid_args(size, alphabet) {
+    Ok(True) ->
+      size
+      |> random_bytes()
+      |> list.map(fn(x: Int) -> BitString {
+        case bit_string.slice(alphabet, and(x, mask), 1) {
+          Ok(nanoid) -> nanoid
+          _ -> <<"":utf8>>
+        }
+      })
+      |> bit_string.concat()
+      |> Ok
+    Error(error) ->
+      error
+      |> Error
+  }
+}
 
 fn check_nanoid_args(size: Int, alphabet: BitString) -> Result(Bool, String) {
   case check_size(size) {
@@ -106,103 +195,4 @@ fn calculate_step(mask: Int, size: Int, alphabet_length: Int) -> Int {
       ),
     )
   float.round(step)
-}
-
-/// Generates a (random) NanoID. The NanoID produced by this function is 
-/// generated using a cryptographically secure random number generator.
-///
-/// ### Usage
-/// ```gleam
-/// import ids/nanoid
-///
-/// let assert Ok(id) = nanoid.generate()
-/// ```
-///
-pub fn generate() -> Result(String, String) {
-  // TODO: When optional arguments with defaults becomes a thing in Gleam
-  //       make it possble to pass an 'alphabet' and 'size'. For now just
-  //       use hardcoded defaults...
-  let alphabet: BitString = default_alphabet
-  let assert Ok(alphabet_string) = bit_string.to_string(alphabet)
-  let alphabet_length: Int = string.length(alphabet_string)
-  let size: Int = default_size
-  case check_nanoid_args(size, alphabet) {
-    Ok(True) -> {
-      let mask = calculate_mask(alphabet_length)
-      let step = calculate_step(mask, size, alphabet_length)
-      case do_generate(size, default_alphabet, mask, step, <<"":utf8>>) {
-        Ok(bitstr_nanoid) ->
-          case bit_string.to_string(bitstr_nanoid) {
-            Ok(str_nanoid) ->
-              str_nanoid
-              |> Ok
-            Error(_) -> {
-              let error: String =
-                "Error: BitString could not be converted to String."
-              error
-              |> Error
-            }
-          }
-        Error(error) ->
-          error
-          |> Error
-      }
-    }
-    Error(error) ->
-      error
-      |> Error
-  }
-}
-
-// Recursively generate a NanoID as long as the given size 
-// of the ID has not yet been reached
-fn do_generate(
-  size: Int,
-  alphabet: BitString,
-  mask: Int,
-  step: Int,
-  acc: BitString,
-) -> Result(BitString, String) {
-  case bit_string.byte_size(acc) >= size {
-    // Truncate the generated ID to the desired size
-    True -> {
-      let assert Ok(nanoid) = bit_string.slice(acc, 0, size)
-      nanoid
-      |> Ok
-    }
-    // The NanoID is not yet the desired size, so continue 
-    // building up the ID
-    False ->
-      case generate_nanoid(step, alphabet, mask) {
-        Ok(partial_nanoid) ->
-          bit_string.concat([acc, partial_nanoid])
-          |> do_generate(size, alphabet, mask, step, _)
-        Error(error) ->
-          error
-          |> Error
-      }
-  }
-}
-
-fn generate_nanoid(
-  size: Int,
-  alphabet: BitString,
-  mask: Int,
-) -> Result(BitString, String) {
-  case check_nanoid_args(size, alphabet) {
-    Ok(True) ->
-      size
-      |> random_bytes()
-      |> list.map(fn(x: Int) -> BitString {
-        case bit_string.slice(alphabet, and(x, mask), 1) {
-          Ok(nanoid) -> nanoid
-          _ -> <<"":utf8>>
-        }
-      })
-      |> bit_string.concat()
-      |> Ok
-    Error(error) ->
-      error
-      |> Error
-  }
 }
