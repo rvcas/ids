@@ -9,7 +9,7 @@
 import gleam/int
 import gleam/list
 import gleam/erlang.{Millisecond}
-import gleam/otp/actor.{Continue, Next, StartResult}
+import gleam/otp/actor.{Next, StartResult}
 import gleam/erlang/process.{Subject}
 import gleam/string
 
@@ -69,7 +69,7 @@ pub fn is_slug(slug: String) -> Bool {
 
 const base: Int = 36
 
-fn handle_msg(msg: Message, state: State) -> Next(State) {
+fn handle_msg(msg: Message, state: State) -> Next(Message, State) {
   case msg {
     Generate(reply) -> {
       let id =
@@ -82,7 +82,7 @@ fn handle_msg(msg: Message, state: State) -> Next(State) {
           random_block(),
         ])
       actor.send(reply, id)
-      Continue(State(..state, count: new_count(state.count)))
+      actor.continue(State(..state, count: new_count(state.count)))
     }
     GenerateSlug(reply) -> {
       let slug =
@@ -99,7 +99,7 @@ fn handle_msg(msg: Message, state: State) -> Next(State) {
           |> string.slice(-2, 2),
         ])
       actor.send(reply, slug)
-      Continue(State(..state, count: new_count(state.count)))
+      actor.continue(State(..state, count: new_count(state.count)))
     }
   }
 }
