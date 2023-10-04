@@ -2,28 +2,35 @@
 
 import gleam/string
 import gleam/int
-import gleam/io
 import gleam/result
 import gleam/list
 import gleam/bit_string
 
 const crockford_alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
 
+/// Encode a string using crockfords base32 encoding
 pub fn encode_base32(binary: String) -> String {
   let bytes = bit_string.from_string(binary)
-  io.debug(bit_string.byte_size(bytes))
-  let to_pad =
-    { { { bit_string.byte_size(bytes) / 5 } + 1 } * 5 } - bit_string.byte_size(
-      bytes,
-    )
-  io.debug(to_pad)
 
-  bytes
-  |> fn(bits) { <<bits:bit_string, 0:size(to_pad)>> }
-  |> io.debug()
-  |> encode_bytes()
+  // figure out how many bits to pad to make the bit_string divisible by 5
+  let to_pad =
+    bytes
+    |> bit_string.byte_size()
+    |> int.multiply(8)
+    |> int.divide(5)
+    |> result.unwrap(0)
+    |> int.add(1)
+    |> int.multiply(5)
+    |> int.subtract({
+      bytes
+      |> bit_string.byte_size()
+      |> int.multiply(8)
+    })
+
+  encode_bytes(<<bytes:bit_string, 0:size(to_pad)>>)
 }
 
+/// Recursively grabs 5 bits and uses them as index in the crockford alphabet and concatinates them to a string
 fn encode_bytes(binary: BitString) -> String {
   case binary {
     <<index:unsigned-size(5), rest:bit_string>> -> {
