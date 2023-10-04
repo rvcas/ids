@@ -5,13 +5,44 @@ import gleam/int
 import gleam/result
 import gleam/list
 import gleam/bit_string
+import gleam/erlang
 
 const crockford_alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
 
-/// Encode a string using crockfords base32 encoding
-pub fn encode_base32(binary: String) -> String {
-  let bytes = bit_string.from_string(binary)
+const max_time = 281_474_976_710_655
 
+@external(erlang, "crypto", "strong_rand_bytes")
+fn crypto_strong_rand_bytes(n: Int) -> BitString
+
+/// Generates a ULID
+pub fn generate() -> String {
+  let timestamp = erlang.system_time(erlang.Millisecond)
+
+  generate_from_timestamp(timestamp)
+  |> result.unwrap("0")
+}
+
+/// Generates a ULID using a unix timestamp in milliseconds
+pub fn generate_from_timestamp(timestamp: Int) -> Result(String, String) {
+  case timestamp {
+    time if time <= max_time ->
+      <<timestamp:size(48), crypto_strong_rand_bytes(10):bit_string>>
+      |> encode_base32()
+      |> Ok
+    _other -> {
+      let error =
+        string.concat([
+          "Error: The timestamp is too large. Use an Unix timestamp smaller than ",
+          int.to_string(max_time),
+          ".",
+        ])
+      Error(error)
+    }
+  }
+}
+
+/// Encode a bit_string using crockfords base32 encoding
+pub fn encode_base32(bytes: BitString) -> String {
   // calculate out how many bits to pad to make the bit_string divisible by 5
   let to_pad =
     bytes
