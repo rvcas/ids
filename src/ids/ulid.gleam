@@ -14,15 +14,20 @@ const max_time = 281_474_976_710_655
 @external(erlang, "crypto", "strong_rand_bytes")
 fn crypto_strong_rand_bytes(n: Int) -> BitString
 
-/// Generates a ULID
+/// Generates an ULID
 pub fn generate() -> String {
   let timestamp = erlang.system_time(erlang.Millisecond)
 
   generate_from_timestamp(timestamp)
-  |> result.unwrap("0")
+  |> fn(res) {
+    case res {
+      Ok(ulid) -> ulid
+      _error -> panic as "Error: Couldn't generate ULID."
+    }
+  }
 }
 
-/// Generates a ULID using a unix timestamp in milliseconds
+/// Generates an ULID using a unix timestamp in milliseconds
 pub fn generate_from_timestamp(timestamp: Int) -> Result(String, String) {
   case timestamp {
     time if time <= max_time ->
@@ -43,7 +48,7 @@ pub fn generate_from_timestamp(timestamp: Int) -> Result(String, String) {
 
 /// Encode a bit_string using crockfords base32 encoding
 pub fn encode_base32(bytes: BitString) -> String {
-  // calculate out how many bits to pad to make the bit_string divisible by 5
+  // calculate how many bits to pad to make the bit_string divisible by 5
   let to_pad =
     bytes
     |> bit_string.byte_size()
