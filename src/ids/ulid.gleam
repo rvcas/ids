@@ -14,7 +14,7 @@ const max_time = 281_474_976_710_655
 @external(erlang, "crypto", "strong_rand_bytes")
 fn crypto_strong_rand_bytes(n: Int) -> BitString
 
-/// Generates an ULID
+/// Generates an ULID.
 pub fn generate() -> String {
   let timestamp = erlang.system_time(erlang.Millisecond)
 
@@ -27,7 +27,7 @@ pub fn generate() -> String {
   }
 }
 
-/// Generates an ULID using a unix timestamp in milliseconds
+/// Generates an ULID using a unix timestamp in milliseconds.
 pub fn generate_from_timestamp(timestamp: Int) -> Result(String, String) {
   case timestamp {
     time if time <= max_time ->
@@ -46,7 +46,12 @@ pub fn generate_from_timestamp(timestamp: Int) -> Result(String, String) {
   }
 }
 
-/// Encode a bit_string using crockfords base32 encoding
+/// Decodes an ULID into #(timestamp, randomness).
+pub fn decode(ulid: String) -> Result(#(Int, String), String) {
+  todo
+}
+
+/// Encode a bit_string using crockfords base32 encoding.
 fn encode_base32(bytes: BitString) -> String {
   // calculate how many bits to pad to make the bit_string divisible by 5
   let to_pad =
@@ -63,7 +68,7 @@ fn encode_base32(bytes: BitString) -> String {
   encode_bytes(<<bytes:bit_string, 0:size(to_pad)>>)
 }
 
-/// Recursively grabs 5 bits and uses them as index in the crockford alphabet and concatinates them to a string
+/// Recursively grabs 5 bits and uses them as index in the crockford alphabet and concatinates them to a string.
 fn encode_bytes(binary: BitString) -> String {
   case binary {
     <<index:unsigned-size(5), rest:bit_string>> -> {
@@ -75,4 +80,9 @@ fn encode_bytes(binary: BitString) -> String {
     }
     <<>> -> ""
   }
+}
+
+/// Decode a string using crockford's base32 encoding.
+fn decode_base32(binary: String) -> String {
+  todo
 }
