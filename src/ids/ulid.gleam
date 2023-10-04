@@ -12,20 +12,17 @@ const crockford_alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
 pub fn encode_base32(binary: String) -> String {
   let bytes = bit_string.from_string(binary)
 
-  // figure out how many bits to pad to make the bit_string divisible by 5
+  // calculate out how many bits to pad to make the bit_string divisible by 5
   let to_pad =
     bytes
     |> bit_string.byte_size()
     |> int.multiply(8)
-    |> int.divide(5)
+    |> int.modulo(5)
+    |> result.unwrap(5)
+    |> int.subtract(5)
+    |> int.absolute_value()
+    |> int.modulo(5)
     |> result.unwrap(0)
-    |> int.add(1)
-    |> int.multiply(5)
-    |> int.subtract({
-      bytes
-      |> bit_string.byte_size()
-      |> int.multiply(8)
-    })
 
   encode_bytes(<<bytes:bit_string, 0:size(to_pad)>>)
 }
