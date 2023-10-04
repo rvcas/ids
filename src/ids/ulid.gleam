@@ -47,7 +47,7 @@ pub fn generate_from_timestamp(timestamp: Int) -> Result(String, String) {
 }
 
 /// Encode a bit_string using crockfords base32 encoding
-pub fn encode_base32(bytes: BitString) -> String {
+fn encode_base32(bytes: BitString) -> String {
   // calculate how many bits to pad to make the bit_string divisible by 5
   let to_pad =
     bytes
