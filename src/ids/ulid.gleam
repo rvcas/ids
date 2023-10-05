@@ -53,9 +53,9 @@ pub fn start() -> StartResult(Message) {
 /// import ids/ulid
 ///
 /// let assert Ok(channel) = ulid.start()
-/// let Ok(id) = ulid.safe_generate(channel)
+/// let Ok(id) = ulid.monotonic_generate(channel)
 /// ```
-pub fn safe_generate(channel: Subject(Message)) -> Result(String, String) {
+pub fn monotonic_generate(channel: Subject(Message)) -> Result(String, String) {
   actor.call(channel, Generate, 1000)
 }
 
@@ -67,9 +67,9 @@ pub fn safe_generate(channel: Subject(Message)) -> Result(String, String) {
 /// import ids/ulid
 ///
 /// let assert Ok(channel) = ulid.start()
-/// let Ok(id) = ulid.safe_from_timestamp(channel, 1_696_346_659_217)
+/// let Ok(id) = ulid.monotonic_from_timestamp(channel, 1_696_346_659_217)
 /// ```
-pub fn safe_from_timestamp(
+pub fn monotonic_from_timestamp(
   channel: Subject(Message),
   timestamp: Int,
 ) -> Result(String, String) {
