@@ -72,7 +72,7 @@ pub fn decode_test() {
 pub fn monotonicity_test() {
   let assert Ok(actor) = ulid.start()
 
-  let assert Ok(id_1) = ulid.safe_generate(actor)
+  let assert Ok(id_1) = ulid.monotonic_generate(actor)
   id_1
   |> check_length()
   |> check_starting_character()
@@ -80,10 +80,10 @@ pub fn monotonicity_test() {
 
   let timestamp = 1_696_346_660_217
   let assert Ok(#(_, random_1)) =
-    ulid.safe_from_timestamp(actor, timestamp)
+    ulid.monotonic_from_timestamp(actor, timestamp)
     |> result.then(ulid.decode)
   let assert Ok(#(_, random_2)) =
-    ulid.safe_from_timestamp(actor, timestamp)
+    ulid.monotonic_from_timestamp(actor, timestamp)
     |> result.then(ulid.decode)
 
   random_2
