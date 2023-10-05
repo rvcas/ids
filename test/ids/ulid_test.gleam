@@ -2,41 +2,93 @@ import ids/ulid
 import gleeunit/should
 import gleam/string
 import gleam/list
+import gleam/result
+
+@external(erlang, "binary", "decode_unsigned")
+fn decode_unsigned(b: BitString) -> Int
 
 pub fn gen_test() {
-  let ulid_1 = ulid.generate()
-  ulid_1
+  let id = ulid.generate()
+  id
+  |> check_length()
+  |> check_starting_character()
+  |> check_crockford_characters()
+}
+
+pub fn from_timestamp_test() {
+  let assert Ok(id_1) = ulid.from_timestamp(1_696_346_659_217)
+  id_1
   |> check_length()
   |> check_starting_character()
   |> check_crockford_characters()
 
-  let assert Ok(ulid_2) = ulid.generate_from_timestamp(1_696_346_659_217)
-  ulid_2
-  |> check_length()
-  |> check_starting_character()
-  |> check_crockford_characters()
-
-  let assert Ok(ulid_3) = ulid.generate_from_timestamp(281_474_976_710_655)
-  ulid_3
+  let assert Ok(id_2) = ulid.from_timestamp(281_474_976_710_655)
+  id_2
   |> string.starts_with("7ZZZZZZZZZ")
   |> should.be_true()
 }
 
+pub fn from_parts_test() {
+  let assert Ok(id_1) =
+    ulid.from_parts(
+      1_696_346_659_217,
+      <<150, 184, 121, 192, 42, 76, 148, 57, 61, 61>>,
+    )
+  id_1
+  |> should.equal("01HBV27PCHJTW7KG1A9JA3JF9X")
+
+  let assert Ok(id_2) =
+    ulid.from_parts(
+      281_474_976_710_655,
+      <<255, 255, 255, 255, 255, 255, 255, 255, 255, 255>>,
+    )
+  id_2
+  |> should.equal("7ZZZZZZZZZZZZZZZZZZZZZZZZZ")
+}
+
 pub fn decode_test() {
   let timestamp = 1_696_346_659_217
+  let random = <<150, 184, 121, 192, 42, 76, 148, 57, 61, 61>>
 
-  let assert Ok(ulid) = ulid.generate_from_timestamp(timestamp)
-  let assert Ok(#(decode_timestamp, _randomness)) = ulid.decode(ulid)
+  let assert Ok(#(decode_timestamp, randomness)) =
+    ulid.from_parts(timestamp, random)
+    |> result.then(ulid.decode)
   decode_timestamp
   |> should.equal(timestamp)
+  randomness
+  |> should.equal(random)
 
   let assert Ok(#(decode_max_time, randomness)) =
     ulid.decode("7ZZZZZZZZZZZZZZZZZZZZZZZZZ")
   decode_max_time
   |> should.equal(ulid.max_time)
-
   randomness
   |> should.equal(<<255, 255, 255, 255, 255, 255, 255, 255, 255, 255>>)
+
+  ulid.decode("8ZZZZZZZZZZZZZZZZZZZZZZZZZ")
+  |> should.be_error()
+}
+
+pub fn monotonicity_test() {
+  let assert Ok(actor) = ulid.start()
+
+  let assert Ok(id_1) = ulid.safe_generate(actor)
+  id_1
+  |> check_length()
+  |> check_starting_character()
+  |> check_crockford_characters()
+
+  let timestamp = 1_696_346_660_217
+  let assert Ok(#(_, random_1)) =
+    ulid.safe_from_timestamp(actor, timestamp)
+    |> result.then(ulid.decode)
+  let assert Ok(#(_, random_2)) =
+    ulid.safe_from_timestamp(actor, timestamp)
+    |> result.then(ulid.decode)
+
+  random_2
+  |> decode_unsigned()
+  |> should.equal({ decode_unsigned(random_1) + 1 })
 }
 
 fn check_length(ulid) -> String {
