@@ -11,6 +11,7 @@
 - [CUID](https://github.com/ericelliott/cuid)
 - [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)
 - [NanoID](https://github.com/ai/nanoid)
+- [Snowflake ID](https://en.wikipedia.org/wiki/Snowflake_ID)
 
 ## Installation
 
@@ -25,3 +26,4 @@ gleam add ids
 1. [Original CUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)
 2. [Elixir CUID](https://github.com/duailibe/cuid)
 3. [Ecto UUID](https://github.com/elixir-ecto/ecto/blob/v3.5.4/lib/ecto/uuid.ex)
+4. [Elixir Snowflake ID](https://github.com/thomas9911/snowflake_id)
