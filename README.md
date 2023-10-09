@@ -11,6 +11,7 @@
 - [CUID](https://github.com/ericelliott/cuid)
 - [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)
 - [NanoID](https://github.com/ai/nanoid)
+- [ULID](https://github.com/ulid/spec)
 - [Snowflake ID](https://en.wikipedia.org/wiki/Snowflake_ID)
 
 ## Installation
