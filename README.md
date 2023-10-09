@@ -27,5 +27,4 @@ gleam add ids
 1. [Original CUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)
 2. [Elixir CUID](https://github.com/duailibe/cuid)
 3. [Ecto UUID](https://github.com/elixir-ecto/ecto/blob/v3.5.4/lib/ecto/uuid.ex)
-4. [Elixir Snowflake ID](https://github.com/thomas9911/snowflake_id)
-5. [Rust Snowflake ID](https://github.com/BinChengZhao/snowflake-rs)
+4. [Rust Snowflake ID](https://github.com/BinChengZhao/snowflake-rs)
