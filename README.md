@@ -9,7 +9,8 @@
 ## Supported
 
 - [CUID](https://github.com/ericelliott/cuid)
-- [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)
+- [UUID v4](https://en.wikipedia.org/wiki/Universally_unique_identifier)
+- [UUID v7](https://www.ietf.org/archive/id/draft-peabody-dispatch-new-uuid-format-04.html#section-5.2)
 - [NanoID](https://github.com/ai/nanoid)
 - [ULID](https://github.com/ulid/spec)
 
