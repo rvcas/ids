@@ -51,4 +51,7 @@ pub fn decode_v7_test() {
   |> should.equal(7)
   rfc_variant
   |> should.equal(2)
+
+  uuid.decode_v7("123")
+  |> should.be_error()
 }

@@ -61,14 +61,16 @@ pub fn decode_v7(
   |> bit_string.from_string()
   |> dump()
   |> result.try(fn(d) {
-    let <<
-      timestamp:unsigned-size(48),
-      ver:unsigned-size(4),
-      a:bit_string-size(12),
-      var:unsigned-size(2),
-      b:bit_string-size(62),
-    >> = d
-    Ok(#(timestamp, ver, a, var, b))
+    case d {
+      <<
+        timestamp:unsigned-size(48),
+        ver:unsigned-size(4),
+        a:bit_string-size(12),
+        var:unsigned-size(2),
+        b:bit_string-size(62),
+      >> -> Ok(#(timestamp, ver, a, var, b))
+      _other -> Error("Error: Couldn't match raw UUID v7.")
+    }
   })
 }
 
