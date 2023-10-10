@@ -1,6 +1,7 @@
 import gleeunit/should
 import ids/uuid
 import gleam/bit_string
+import gleam/erlang
 
 pub fn gen_v4_test() {
   let assert Ok(id) = uuid.generate_v4()
@@ -36,4 +37,18 @@ pub fn gen_v7_test() {
   >> = bit_string.from_string(id_1)
 
   should.be_true(True)
+}
+
+pub fn decode_v7_test() {
+  let timestamp = erlang.system_time(erlang.Millisecond)
+  let assert Ok(id) = uuid.generate_v7_from_timestamp(timestamp)
+
+  let assert Ok(#(timestamp, version, _random_a, rfc_variant, _random_b)) =
+    uuid.decode_v7(id)
+  timestamp
+  |> should.equal(timestamp)
+  version
+  |> should.equal(7)
+  rfc_variant
+  |> should.equal(2)
 }

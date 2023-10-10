@@ -53,6 +53,25 @@ pub fn generate_v7_from_timestamp(timestamp: Int) -> Result(String, String) {
   cast(<<timestamp:size(48), 7:size(4), a:size(12), 2:size(2), b:size(62)>>)
 }
 
+/// Decodes a version 7 UUID to #(timestamp, version, random_a, rfc_variant, random_b).
+pub fn decode_v7(
+  uuid_v7: String,
+) -> Result(#(Int, Int, BitString, Int, BitString), String) {
+  uuid_v7
+  |> bit_string.from_string()
+  |> dump()
+  |> result.try(fn(d) {
+    let <<
+      timestamp:unsigned-size(48),
+      ver:unsigned-size(4),
+      a:bit_string-size(12),
+      var:unsigned-size(2),
+      b:bit_string-size(62),
+    >> = d
+    Ok(#(timestamp, ver, a, var, b))
+  })
+}
+
 fn cast(raw_uuid: BitString) -> Result(String, String) {
   case raw_uuid {
     <<
@@ -136,6 +155,85 @@ fn cast(raw_uuid: BitString) -> Result(String, String) {
   }
 }
 
+fn dump(uuid: BitString) -> Result(BitString, String) {
+  case uuid {
+    <<
+      a1,
+      a2,
+      a3,
+      a4,
+      a5,
+      a6,
+      a7,
+      a8,
+      45,
+      b1,
+      b2,
+      b3,
+      b4,
+      45,
+      c1,
+      c2,
+      c3,
+      c4,
+      45,
+      d1,
+      d2,
+      d3,
+      d4,
+      45,
+      e1,
+      e2,
+      e3,
+      e4,
+      e5,
+      e6,
+      e7,
+      e8,
+      e9,
+      e10,
+      e11,
+      e12,
+    >> ->
+      <<
+        d(a1):size(4),
+        d(a2):size(4),
+        d(a3):size(4),
+        d(a4):size(4),
+        d(a5):size(4),
+        d(a6):size(4),
+        d(a7):size(4),
+        d(a8):size(4),
+        d(b1):size(4),
+        d(b2):size(4),
+        d(b3):size(4),
+        d(b4):size(4),
+        d(c1):size(4),
+        d(c2):size(4),
+        d(c3):size(4),
+        d(c4):size(4),
+        d(d1):size(4),
+        d(d2):size(4),
+        d(d3):size(4),
+        d(d4):size(4),
+        d(e1):size(4),
+        d(e2):size(4),
+        d(e3):size(4),
+        d(e4):size(4),
+        d(e5):size(4),
+        d(e6):size(4),
+        d(e7):size(4),
+        d(e8):size(4),
+        d(e9):size(4),
+        d(e10):size(4),
+        d(e11):size(4),
+        d(e12):size(4),
+      >>
+      |> Ok()
+    _other -> Error("Error: UUID is malformed.")
+  }
+}
+
 fn e(n: Int) -> Int {
   case n {
     0 -> 48
@@ -154,5 +252,26 @@ fn e(n: Int) -> Int {
     13 -> 100
     14 -> 101
     15 -> 102
+  }
+}
+
+fn d(n: Int) -> Int {
+  case n {
+    48 -> 0
+    49 -> 1
+    50 -> 2
+    51 -> 3
+    52 -> 4
+    53 -> 5
+    54 -> 6
+    55 -> 7
+    56 -> 8
+    57 -> 9
+    97 -> 10
+    98 -> 11
+    99 -> 12
+    100 -> 13
+    101 -> 14
+    102 -> 15
   }
 }
