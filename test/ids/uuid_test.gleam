@@ -1,6 +1,6 @@
 import gleeunit/should
 import ids/uuid
-import gleam/bit_string
+import gleam/bit_array
 import gleam/erlang
 
 pub fn gen_v4_test() {
@@ -16,7 +16,7 @@ pub fn gen_v4_test() {
     _:size(32),
     45,
     _:size(96),
-  >> = bit_string.from_string(id)
+  >> = bit_array.from_string(id)
 
   should.be_true(True)
 }
@@ -34,7 +34,7 @@ pub fn gen_v7_test() {
     _:size(32),
     45,
     _:size(96),
-  >> = bit_string.from_string(id_1)
+  >> = bit_array.from_string(id_1)
 
   should.be_true(True)
 }

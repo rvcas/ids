@@ -4,12 +4,12 @@
 //// - Version 4 (random)
 ////
 
-import gleam/bit_string
+import gleam/bit_array
 import gleam/result
 import gleam/erlang
 
 @external(erlang, "crypto", "strong_rand_bytes")
-fn crypto_strong_rand_bytes(n: Int) -> BitString
+fn crypto_strong_rand_bytes(n: Int) -> BitArray
 
 /// Generates a version 4 (random) UUID. The version 4 UUID produced
 /// by this function is generated using a cryptographically secure 
@@ -56,25 +56,25 @@ pub fn generate_v7_from_timestamp(timestamp: Int) -> Result(String, String) {
 /// Decodes a version 7 UUID to #(timestamp, version, random_a, rfc_variant, random_b).
 pub fn decode_v7(
   uuid_v7: String,
-) -> Result(#(Int, Int, BitString, Int, BitString), String) {
+) -> Result(#(Int, Int, BitArray, Int, BitArray), String) {
   uuid_v7
-  |> bit_string.from_string()
+  |> bit_array.from_string()
   |> dump()
   |> result.try(fn(d) {
     case d {
       <<
         timestamp:unsigned-size(48),
         ver:unsigned-size(4),
-        a:bit_string-size(12),
+        a:bits-size(12),
         var:unsigned-size(2),
-        b:bit_string-size(62),
+        b:bits-size(62),
       >> -> Ok(#(timestamp, ver, a, var, b))
       _other -> Error("Error: Couldn't match raw UUID v7.")
     }
   })
 }
 
-fn cast(raw_uuid: BitString) -> Result(String, String) {
+fn cast(raw_uuid: BitArray) -> Result(String, String) {
   case raw_uuid {
     <<
       a1:size(4),
@@ -148,7 +148,7 @@ fn cast(raw_uuid: BitString) -> Result(String, String) {
         e(e11),
         e(e12),
       >>
-      |> bit_string.to_string()
+      |> bit_array.to_string()
       |> result.replace_error(
         "Error: BitString could not be converted to String.",
       )
@@ -157,7 +157,7 @@ fn cast(raw_uuid: BitString) -> Result(String, String) {
   }
 }
 
-fn dump(uuid: BitString) -> Result(BitString, String) {
+fn dump(uuid: BitArray) -> Result(BitArray, String) {
   case uuid {
     <<
       a1,

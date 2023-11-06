@@ -3,8 +3,8 @@ import ids/nanoid
 import gleeunit/should
 import gleam/list
 import gleam/string
-import gleam/bit_string
-import gleam/set.{Set}
+import gleam/bit_array
+import gleam/set.{type Set}
 
 pub fn main() {
   gleeunit.main()
@@ -21,8 +21,8 @@ pub fn nanoid_test() {
   // Make sure the generated IDs are non-empty bit strings
   nanoids
   |> list.all(fn(v: String) -> Bool {
-    let bitstr_v: BitString = bit_string.from_string(v)
-    case bit_string.byte_size(bitstr_v) > 0 {
+    let bitstr_v: BitArray = bit_array.from_string(v)
+    case bit_array.byte_size(bitstr_v) > 0 {
       True -> True
       False -> False
     }
@@ -32,8 +32,8 @@ pub fn nanoid_test() {
   // Make sure the generated IDs have the right size
   nanoids
   |> list.all(fn(v: String) -> Bool {
-    let bitstr_v: BitString = bit_string.from_string(v)
-    let assert Ok(string) = bit_string.to_string(bitstr_v)
+    let bitstr_v: BitArray = bit_array.from_string(v)
+    let assert Ok(string) = bit_array.to_string(bitstr_v)
     let length: Int =
       string
       |> string.length()
@@ -47,7 +47,7 @@ pub fn nanoid_test() {
   // Make sure the generated IDs contain the right symbols
   nanoids
   |> list.all(fn(v: String) -> Bool {
-    let assert Ok(alphabet) = bit_string.to_string(nanoid.default_alphabet)
+    let assert Ok(alphabet) = bit_array.to_string(nanoid.default_alphabet)
     v
     |> string.to_graphemes()
     |> list.all(fn(w: String) -> Bool { string.contains(alphabet, w) })
