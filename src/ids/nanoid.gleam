@@ -3,13 +3,13 @@
 ////
 
 import gleam/string
-import gleam/bit_string
+import gleam/bit_array
 import gleam/float
 import gleam/int
 import gleam/list
 
 /// The default alphabet used when generating NanoIDs.
-pub const default_alphabet: BitString = <<
+pub const default_alphabet: BitArray = <<
   "_-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":utf8,
 >>
 
@@ -17,7 +17,7 @@ pub const default_alphabet: BitString = <<
 pub const default_size: Int = 21
 
 @external(erlang, "crypto", "strong_rand_bytes")
-fn crypto_strong_rand_bytes(length: Int) -> BitString
+fn crypto_strong_rand_bytes(length: Int) -> BitArray
 
 @external(erlang, "erlang", "bsl")
 fn shift_left(n: Int, s: Int) -> Int
@@ -26,7 +26,7 @@ fn shift_left(n: Int, s: Int) -> Int
 fn and(left: Int, right: Int) -> Int
 
 @external(erlang, "binary", "bin_to_list")
-fn bin_to_list(b: BitString) -> List(Int)
+fn bin_to_list(b: BitArray) -> List(Int)
 
 @external(erlang, "math", "log")
 fn log(f: Float) -> Float
@@ -45,9 +45,9 @@ pub fn generate() -> String {
   // TODO: When optional arguments with defaults becomes a thing in Gleam
   //       make it possble to pass an 'alphabet' and 'size'. For now just
   //       use hardcoded defaults...
-  let alphabet: BitString = default_alphabet
+  let alphabet: BitArray = default_alphabet
 
-  let assert Ok(alphabet_string) = bit_string.to_string(alphabet)
+  let assert Ok(alphabet_string) = bit_array.to_string(alphabet)
 
   let alphabet_length: Int = string.length(alphabet_string)
 
@@ -62,7 +62,7 @@ pub fn generate() -> String {
   let assert Ok(bitstr_nanoid) =
     do_generate(size, alphabet, mask, step, <<"":utf8>>)
 
-  let assert Ok(str_nanoid) = bit_string.to_string(bitstr_nanoid)
+  let assert Ok(str_nanoid) = bit_array.to_string(bitstr_nanoid)
 
   str_nanoid
 }
@@ -71,15 +71,15 @@ pub fn generate() -> String {
 // of the ID has not yet been reached
 fn do_generate(
   size: Int,
-  alphabet: BitString,
+  alphabet: BitArray,
   mask: Int,
   step: Int,
-  acc: BitString,
-) -> Result(BitString, String) {
-  case bit_string.byte_size(acc) >= size {
+  acc: BitArray,
+) -> Result(BitArray, String) {
+  case bit_array.byte_size(acc) >= size {
     // Truncate the generated ID to the desired size
     True -> {
-      let assert Ok(nanoid) = bit_string.slice(acc, 0, size)
+      let assert Ok(nanoid) = bit_array.slice(acc, 0, size)
       nanoid
       |> Ok
     }
@@ -88,7 +88,7 @@ fn do_generate(
     False ->
       case generate_nanoid(step, alphabet, mask) {
         Ok(partial_nanoid) ->
-          bit_string.concat([acc, partial_nanoid])
+          bit_array.concat([acc, partial_nanoid])
           |> do_generate(size, alphabet, mask, step, _)
         Error(error) ->
           error
@@ -99,20 +99,20 @@ fn do_generate(
 
 fn generate_nanoid(
   size: Int,
-  alphabet: BitString,
+  alphabet: BitArray,
   mask: Int,
-) -> Result(BitString, String) {
+) -> Result(BitArray, String) {
   case check_nanoid_args(size, alphabet) {
     Ok(True) ->
       size
       |> random_bytes()
-      |> list.map(fn(x: Int) -> BitString {
-        case bit_string.slice(alphabet, and(x, mask), 1) {
+      |> list.map(fn(x: Int) -> BitArray {
+        case bit_array.slice(alphabet, and(x, mask), 1) {
           Ok(nanoid) -> nanoid
           _ -> <<"":utf8>>
         }
       })
-      |> bit_string.concat()
+      |> bit_array.concat()
       |> Ok
     Error(error) ->
       error
@@ -120,7 +120,7 @@ fn generate_nanoid(
   }
 }
 
-fn check_nanoid_args(size: Int, alphabet: BitString) -> Result(Bool, String) {
+fn check_nanoid_args(size: Int, alphabet: BitArray) -> Result(Bool, String) {
   case check_size(size) {
     Ok(True) ->
       case check_alphabet(alphabet) {
@@ -151,8 +151,8 @@ fn check_size(size: Int) -> Result(Bool, String) {
   }
 }
 
-fn check_alphabet(alphabet: BitString) -> Result(Bool, String) {
-  case bit_string.byte_size(alphabet) > 1 {
+fn check_alphabet(alphabet: BitArray) -> Result(Bool, String) {
+  case bit_array.byte_size(alphabet) > 1 {
     True ->
       True
       |> Ok

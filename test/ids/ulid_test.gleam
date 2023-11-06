@@ -5,7 +5,7 @@ import gleam/list
 import gleam/result
 
 @external(erlang, "binary", "decode_unsigned")
-fn decode_unsigned(b: BitString) -> Int
+fn decode_unsigned(b: BitArray) -> Int
 
 pub fn gen_test() {
   let id = ulid.generate()

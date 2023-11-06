@@ -4,11 +4,11 @@ import gleam/int
 import gleam/string
 import gleam/result
 import gleam/erlang
-import gleam/otp/actor.{Next}
-import gleam/erlang/process.{Subject}
+import gleam/otp/actor.{type Next}
+import gleam/erlang/process.{type Subject}
 
 @external(erlang, "binary", "encode_unsigned")
-fn encode_unsigned(i: Int) -> BitString
+fn encode_unsigned(i: Int) -> BitArray
 
 /// The messages handled by the actor.
 /// The actor shouldn't be called directly so this type is opaque.

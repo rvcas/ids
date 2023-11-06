@@ -9,8 +9,8 @@
 import gleam/int
 import gleam/list
 import gleam/erlang.{Millisecond}
-import gleam/otp/actor.{Next, StartResult}
-import gleam/erlang/process.{Subject}
+import gleam/otp/actor.{type Next, type StartResult}
+import gleam/erlang/process.{type Subject}
 import gleam/string
 
 /// The messages handled by the actor.
