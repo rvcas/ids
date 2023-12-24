@@ -142,7 +142,7 @@ fn encode_base32(bytes: BitArray) -> String {
   encode_bytes(<<0:size(to_pad), bytes:bits>>)
 }
 
-/// Recursively grabs 5 bits and uses them as index in the crockford alphabet and concatinates them to a string.
+/// Recursively grabs 5 bits and uses them as index in the crockford alphabet and concatenates them to a string.
 fn encode_bytes(binary: BitArray) -> String {
   case binary {
     <<index:unsigned-size(5), rest:bits>> -> {
@@ -161,22 +161,19 @@ fn decode_base32(binary: String) -> Result(BitArray, Nil) {
   let crockford_with_index =
     crockford_alphabet
     |> string.to_graphemes()
-    |> list.index_map(fn(i, x) { #(x, i) })
+    |> list.index_map(fn(i, x) { #(i, x) })
 
   let bits =
     binary
     |> string.to_graphemes()
-    |> list.fold(
-      <<>>,
-      fn(acc, c) {
-        let index =
-          crockford_with_index
-          |> list.key_find(c)
-          |> result.unwrap(0)
+    |> list.fold(<<>>, fn(acc, c) {
+      let index =
+        crockford_with_index
+        |> list.key_find(c)
+        |> result.unwrap(0)
 
-        <<acc:bits, index:5>>
-      },
-    )
+      <<acc:bits, index:5>>
+    })
 
   let padding =
     bits
