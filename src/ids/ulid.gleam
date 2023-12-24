@@ -152,7 +152,7 @@ fn encode_bytes(binary: BitArray) -> String {
       |> result.unwrap("0")
       |> string.append(encode_bytes(rest))
     }
-    <<>> -> ""
+    <<>> | _ -> ""
   }
 }
 

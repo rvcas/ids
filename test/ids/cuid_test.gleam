@@ -1,7 +1,7 @@
 import gleeunit/should
 import ids/cuid
 import gleam/iterator.{Done, Next}
-import gleam/map
+import gleam/dict
 import gleam/pair
 import gleam/string
 
@@ -61,20 +61,17 @@ fn check_collision(func: fn() -> String) -> Bool {
       True -> Next(element: func(), accumulator: acc + 1)
     }
   })
-  |> iterator.fold(
-    from: #(map.new(), True),
-    with: fn(acc, id) {
-      let #(id_map, flag) = acc
+  |> iterator.fold(from: #(dict.new(), True), with: fn(acc, id) {
+    let #(id_map, flag) = acc
 
-      case flag {
-        False -> acc
-        True ->
-          case map.get(id_map, id) {
-            Ok(_) -> #(id_map, False)
-            Error(_) -> #(map.insert(id_map, id, id), True)
-          }
-      }
-    },
-  )
+    case flag {
+      False -> acc
+      True ->
+        case dict.get(id_map, id) {
+          Ok(_) -> #(id_map, False)
+          Error(_) -> #(dict.insert(id_map, id, id), True)
+        }
+    }
+  })
   |> pair.second()
 }

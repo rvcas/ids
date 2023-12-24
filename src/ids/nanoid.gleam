@@ -43,7 +43,7 @@ fn log(f: Float) -> Float
 ///
 pub fn generate() -> String {
   // TODO: When optional arguments with defaults becomes a thing in Gleam
-  //       make it possble to pass an 'alphabet' and 'size'. For now just
+  //       make it possible to pass an 'alphabet' and 'size'. For now just
   //       use hardcoded defaults...
   let alphabet: BitArray = default_alphabet
 
@@ -114,6 +114,9 @@ fn generate_nanoid(
       })
       |> bit_array.concat()
       |> Ok
+    Ok(False) ->
+      "Error: Invalid arguments."
+      |> Error
     Error(error) ->
       error
       |> Error
@@ -127,10 +130,16 @@ fn check_nanoid_args(size: Int, alphabet: BitArray) -> Result(Bool, String) {
         Ok(True) ->
           True
           |> Ok
+        Ok(False) ->
+          False
+          |> Ok
         Error(error) ->
           error
           |> Error
       }
+    Ok(False) ->
+      False
+      |> Ok
     Error(error) ->
       error
       |> Error
@@ -172,7 +181,7 @@ fn random_bytes(size: Int) -> List(Int) {
   |> bin_to_list()
 }
 
-// Calculate a bitmask value that can be used to transform byte vaules 
+// Calculate a bitmask value that can be used to transform byte values 
 // into values that are closer to the size of the alphabet used. The 
 // bitmask value will be the closest `2^31 - 1` number, that exceeds 
 // the alphabet size. For example, the bitmask of the alphabet of size 
@@ -190,9 +199,8 @@ fn calculate_mask(alphabet_length: Int) -> Int {
 fn calculate_step(mask: Int, size: Int, alphabet_length: Int) -> Int {
   let step: Float =
     float.ceiling(
-      1.6 *. int.to_float(mask) *. int.to_float(size) /. int.to_float(
-        alphabet_length,
-      ),
+      1.6 *. int.to_float(mask) *. int.to_float(size)
+      /. int.to_float(alphabet_length),
     )
   float.round(step)
 }

@@ -254,6 +254,7 @@ fn e(n: Int) -> Int {
     13 -> 100
     14 -> 101
     15 -> 102
+    _ -> panic as "Error: unexpected value in `e`"
   }
 }
 
@@ -275,5 +276,6 @@ fn d(n: Int) -> Int {
     100 -> 13
     101 -> 14
     102 -> 15
+    _ -> panic as "Error: unexpected value in `d`"
   }
 }
