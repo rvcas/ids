@@ -30,18 +30,16 @@ pub fn from_timestamp_test() {
 
 pub fn from_parts_test() {
   let assert Ok(id_1) =
-    ulid.from_parts(
-      1_696_346_659_217,
-      <<150, 184, 121, 192, 42, 76, 148, 57, 61, 61>>,
-    )
+    ulid.from_parts(1_696_346_659_217, <<
+      150, 184, 121, 192, 42, 76, 148, 57, 61, 61,
+    >>)
   id_1
   |> should.equal("01HBV27PCHJTW7KG1A9JA3JF9X")
 
   let assert Ok(id_2) =
-    ulid.from_parts(
-      281_474_976_710_655,
-      <<255, 255, 255, 255, 255, 255, 255, 255, 255, 255>>,
-    )
+    ulid.from_parts(281_474_976_710_655, <<
+      255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    >>)
   id_2
   |> should.equal("7ZZZZZZZZZZZZZZZZZZZZZZZZZ")
 }
