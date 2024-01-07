@@ -152,7 +152,7 @@ fn encode_bytes(binary: BitArray) -> String {
       |> result.unwrap("0")
       |> string.append(encode_bytes(rest))
     }
-    <<>> -> ""
+    _ -> ""
   }
 }
 
@@ -161,22 +161,19 @@ fn decode_base32(binary: String) -> Result(BitArray, Nil) {
   let crockford_with_index =
     crockford_alphabet
     |> string.to_graphemes()
-    |> list.index_map(fn(i, x) { #(x, i) })
+    |> list.index_map(fn(x, i) { #(x, i) })
 
   let bits =
     binary
     |> string.to_graphemes()
-    |> list.fold(
-      <<>>,
-      fn(acc, c) {
-        let index =
-          crockford_with_index
-          |> list.key_find(c)
-          |> result.unwrap(0)
+    |> list.fold(<<>>, fn(acc, c) {
+      let index =
+        crockford_with_index
+        |> list.key_find(c)
+        |> result.unwrap(0)
 
-        <<acc:bits, index:5>>
-      },
-    )
+      <<acc:bits, index:5>>
+    })
 
   let padding =
     bits
