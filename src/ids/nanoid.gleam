@@ -53,7 +53,7 @@ pub fn generate() -> String {
 
   let size: Int = default_size
 
-  let assert Ok(True) = check_nanoid_args(size, alphabet)
+  let assert Ok(Nil) = check_nanoid_args(size, alphabet)
 
   let mask = calculate_mask(alphabet_length)
 
@@ -103,7 +103,7 @@ fn generate_nanoid(
   mask: Int,
 ) -> Result(BitArray, String) {
   case check_nanoid_args(size, alphabet) {
-    Ok(True) ->
+    Ok(Nil) ->
       size
       |> random_bytes()
       |> list.map(fn(x: Int) -> BitArray {
@@ -120,48 +120,30 @@ fn generate_nanoid(
   }
 }
 
-fn check_nanoid_args(size: Int, alphabet: BitArray) -> Result(Bool, String) {
+fn check_nanoid_args(size: Int, alphabet: BitArray) -> Result(Nil, String) {
   case check_size(size) {
-    Ok(True) ->
-      case check_alphabet(alphabet) {
-        Ok(True) ->
-          True
-          |> Ok
-        Error(error) ->
-          error
-          |> Error
-      }
-    Error(error) ->
-      error
-      |> Error
+    Ok(Nil) -> check_alphabet(alphabet)
+    Error(error) -> Error(error)
   }
 }
 
-fn check_size(size: Int) -> Result(Bool, String) {
+fn check_size(size: Int) -> Result(Nil, String) {
   case size > 0 {
-    True ->
-      True
-      |> Ok
-    False -> {
-      let error: String =
-        "Error: The specified ID size is too small. Increase the size of the ID."
-      error
-      |> Error
-    }
+    True -> Ok(Nil)
+    False ->
+      Error(
+        "Error: The specified ID size is too small. Increase the size of the ID.",
+      )
   }
 }
 
-fn check_alphabet(alphabet: BitArray) -> Result(Bool, String) {
+fn check_alphabet(alphabet: BitArray) -> Result(Nil, String) {
   case bit_array.byte_size(alphabet) > 1 {
-    True ->
-      True
-      |> Ok
-    False -> {
-      let error: String =
-        "Error: The specified alphabet size is too small. Increase the size of the alphabet."
-      error
-      |> Error
-    }
+    True -> Ok(Nil)
+    False ->
+      Error(
+        "Error: The specified alphabet size is too small. Increase the size of the alphabet.",
+      )
   }
 }
 
@@ -190,9 +172,8 @@ fn calculate_mask(alphabet_length: Int) -> Int {
 fn calculate_step(mask: Int, size: Int, alphabet_length: Int) -> Int {
   let step: Float =
     float.ceiling(
-      1.6 *. int.to_float(mask) *. int.to_float(size) /. int.to_float(
-        alphabet_length,
-      ),
+      1.6 *. int.to_float(mask) *. int.to_float(size)
+      /. int.to_float(alphabet_length),
     )
   float.round(step)
 }

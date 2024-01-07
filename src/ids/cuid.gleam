@@ -161,7 +161,8 @@ fn get_fingerprint() -> String {
 
   let hostid = { sum + list.length(localhost) + base } % operator
 
-  id + hostid
+  id
+  + hostid
   |> int.to_base36()
 }
 

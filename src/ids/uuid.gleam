@@ -23,7 +23,7 @@ fn crypto_strong_rand_bytes(n: Int) -> BitArray
 /// ```
 ///
 pub fn generate_v4() -> Result(String, String) {
-  let <<u0:size(48), _:size(4), u1:size(12), _:size(2), u2:size(62)>> =
+  let assert <<u0:size(48), _:size(4), u1:size(12), _:size(2), u2:size(62)>> =
     crypto_strong_rand_bytes(16)
 
   cast(<<u0:size(48), 4:size(4), u1:size(12), 2:size(2), u2:size(62)>>)
@@ -47,7 +47,7 @@ pub fn generate_v7() -> Result(String, String) {
 
 /// Generates a version 7 UUID from a given unix timestamp in milliseconds.
 pub fn generate_v7_from_timestamp(timestamp: Int) -> Result(String, String) {
-  let <<_:size(48), _:size(4), a:size(12), _:size(2), b:size(62)>> =
+  let assert <<_:size(48), _:size(4), a:size(12), _:size(2), b:size(62)>> =
     crypto_strong_rand_bytes(16)
 
   cast(<<timestamp:size(48), 7:size(4), a:size(12), 2:size(2), b:size(62)>>)
@@ -254,6 +254,7 @@ fn e(n: Int) -> Int {
     13 -> 100
     14 -> 101
     15 -> 102
+    _ -> 102
   }
 }
 
@@ -275,5 +276,6 @@ fn d(n: Int) -> Int {
     100 -> 13
     101 -> 14
     102 -> 15
+    _ -> 15
   }
 }
