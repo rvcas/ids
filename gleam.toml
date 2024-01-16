@@ -6,7 +6,7 @@ repository = { type = "github", user = "rvcas", repo = "ids" }
 gleam = ">= 0.32.2"
 
 [dependencies]
-gleam_stdlib = "~> 0.34"
+gleam_stdlib = "~> 0.34 or ~> 1.0"
 gleam_otp = "~> 0.7"
 gleam_erlang = "~> 0.22"
 
