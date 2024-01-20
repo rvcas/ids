@@ -11,5 +11,5 @@ packages = [
 [requirements]
 gleam_erlang = { version = "~> 0.22" }
 gleam_otp = { version = "~> 0.7" }
-gleam_stdlib = { version = "~> 0.34" }
+gleam_stdlib = { version = "~> 0.34 or ~> 1.0" }
 gleeunit = { version = "~> 1.0" }
