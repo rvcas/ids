@@ -5,7 +5,7 @@ import gleam/erlang/process.{type Subject}
 import gleam/int
 import gleam/otp/actor.{type Next, type StartResult}
 import gleam/string
-import ids/utils
+import ids/base32
 
 @internal
 pub const crockford_alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
@@ -101,7 +101,7 @@ pub fn from_parts(
   case timestamp, randomness {
     time, <<rand:bits-size(80)>> if time <= max_time ->
       <<timestamp:size(48), rand:bits>>
-      |> utils.encode_base32(crockford_alphabet)
+      |> base32.encode(crockford_alphabet)
       |> Ok
     _, _ -> {
       let error =
@@ -117,7 +117,7 @@ pub fn from_parts(
 
 /// Decodes an ULID into #(timestamp, randomness).
 pub fn decode(ulid: String) -> Result(#(Int, BitArray), String) {
-  case utils.decode_base32(ulid, crockford_alphabet) {
+  case base32.decode(ulid, crockford_alphabet) {
     Ok(<<timestamp:unsigned-size(48), randomness:bits-size(80)>>) ->
       Ok(#(timestamp, randomness))
     _other -> Error("Error: Decoding failed. Is a valid ULID being supplied?")

@@ -4,7 +4,7 @@ import gleam/bit_array
 import gleam/regex
 import gleam/result
 import gleam/string
-import ids/utils
+import ids/base32
 import ids/uuid
 
 @internal
@@ -47,7 +47,7 @@ pub fn from_uuid(
         |> uuid.dump,
       )
 
-      let id = utils.encode_base32(raw_uuid, alphabet)
+      let id = base32.encode(raw_uuid, alphabet)
 
       Ok(p <> id)
     }
@@ -84,7 +84,7 @@ pub fn decode(tid) -> Result(#(String, String), String) {
 fn decode_suffix(suffix) -> Result(String, String) {
   use raw_uuid <- result.try(
     suffix
-    |> utils.decode_base32(alphabet)
+    |> base32.decode(alphabet)
     |> result.replace_error("Error: Couldn't decode suffix."),
   )
 
