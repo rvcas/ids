@@ -1,11 +1,11 @@
 //// A module for generating Snowflake IDs.
 
-import gleam/int
-import gleam/string
-import gleam/result
 import gleam/erlang
-import gleam/otp/actor.{type Next}
 import gleam/erlang/process.{type Subject}
+import gleam/int
+import gleam/otp/actor.{type Next}
+import gleam/result
+import gleam/string
 
 @external(erlang, "binary", "encode_unsigned")
 fn encode_unsigned(i: Int) -> BitArray
@@ -98,9 +98,11 @@ fn update_state(state: State) -> State {
     erlang.system_time(erlang.Millisecond)
     |> int.subtract(state.epoch)
 
-  case state.last_time {
-    lt if lt == now && state.idx < 4095 -> State(..state, idx: state.idx + 1)
-    lt if lt == now -> update_state(state)
-    _other -> State(..state, last_time: now)
+  case state {
+    State(last_time: lt, idx: idx, ..) if lt == now && idx < 4095 -> {
+      State(..state, idx: state.idx + 1)
+    }
+    State(last_time: lt, ..) if lt == now -> update_state(state)
+    _other -> State(..state, last_time: now, idx: 0)
   }
 }
