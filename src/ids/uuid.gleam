@@ -5,8 +5,8 @@
 ////
 
 import gleam/bit_array
-import gleam/result
 import gleam/erlang
+import gleam/result
 
 @external(erlang, "crypto", "strong_rand_bytes")
 fn crypto_strong_rand_bytes(n: Int) -> BitArray
@@ -74,7 +74,8 @@ pub fn decode_v7(
   })
 }
 
-fn cast(raw_uuid: BitArray) -> Result(String, String) {
+@internal
+pub fn cast(raw_uuid: BitArray) -> Result(String, String) {
   case raw_uuid {
     <<
       a1:size(4),
@@ -157,7 +158,8 @@ fn cast(raw_uuid: BitArray) -> Result(String, String) {
   }
 }
 
-fn dump(uuid: BitArray) -> Result(BitArray, String) {
+@internal
+pub fn dump(uuid: BitArray) -> Result(BitArray, String) {
   case uuid {
     <<
       a1,
