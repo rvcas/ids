@@ -14,6 +14,7 @@
 - [NanoID](https://github.com/ai/nanoid)
 - [ULID](https://github.com/ulid/spec)
 - [Snowflake ID](https://en.wikipedia.org/wiki/Snowflake_ID)
+- [TypeID](https://github.com/jetify-com/typeid)
 
 ## Installation
 
@@ -30,3 +31,6 @@ gleam add ids
 3. [Ecto UUID](https://github.com/elixir-ecto/ecto/blob/v3.5.4/lib/ecto/uuid.ex)
 4. [Elixir UUID](https://github.com/bitwalker/uniq)
 5. [Rust Snowflake ID](https://github.com/BinChengZhao/snowflake-rs)
+6. [TypeID Spec](https://github.com/jetify-com/typeid/tree/main/spec)
+6. [Elixir TypeID](https://github.com/sloanelybutsurely/typeid-elixir)
+
