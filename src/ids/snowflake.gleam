@@ -98,9 +98,11 @@ fn update_state(state: State) -> State {
     erlang.system_time(erlang.Millisecond)
     |> int.subtract(state.epoch)
 
-  case state.last_time {
-    lt if lt == now && state.idx < 4095 -> State(..state, idx: state.idx + 1)
-    lt if lt == now -> update_state(state)
-    _other -> State(..state, last_time: now)
+  case state {
+    State(last_time: lt, idx: idx, ..) if lt == now && idx < 4095 -> {
+      State(..state, idx: state.idx + 1)
+    }
+    State(last_time: lt, ..) if lt == now -> update_state(state)
+    _other -> State(..state, last_time: now, idx: 0)
   }
 }
