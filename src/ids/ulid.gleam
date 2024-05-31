@@ -1,22 +1,20 @@
 //// A module for generating ULIDs (Universally Unique Lexicographically Sortable Identifier).
 
-import gleam/string
-import gleam/int
-import gleam/result
-import gleam/list
 import gleam/erlang
-import gleam/otp/actor.{type Next, type StartResult}
 import gleam/erlang/process.{type Subject}
+import gleam/int
+import gleam/otp/actor.{type Next, type StartResult}
+import gleam/string
+import ids/utils
 
+@internal
 pub const crockford_alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
 
+@internal
 pub const max_time = 281_474_976_710_655
 
 @external(erlang, "crypto", "strong_rand_bytes")
 fn crypto_strong_rand_bytes(n: Int) -> BitArray
-
-@external(erlang, "erlang", "bit_size")
-fn bit_size(b: BitArray) -> Int
 
 @external(erlang, "binary", "decode_unsigned")
 fn decode_unsigned(b: BitArray) -> Int
@@ -100,12 +98,12 @@ pub fn from_parts(
   timestamp: Int,
   randomness: BitArray,
 ) -> Result(String, String) {
-  case #(timestamp, randomness) {
-    #(time, <<rand:bits-size(80)>>) if time <= max_time ->
+  case timestamp, randomness {
+    time, <<rand:bits-size(80)>> if time <= max_time ->
       <<timestamp:size(48), rand:bits>>
-      |> encode_base32()
+      |> utils.encode_base32(crockford_alphabet)
       |> Ok
-    _other -> {
+    _, _ -> {
       let error =
         string.concat([
           "Error: The timestamp is too large or randomness isn't 80 bits. Please use an Unix timestamp smaller than ",
@@ -119,71 +117,10 @@ pub fn from_parts(
 
 /// Decodes an ULID into #(timestamp, randomness).
 pub fn decode(ulid: String) -> Result(#(Int, BitArray), String) {
-  case decode_base32(ulid) {
+  case utils.decode_base32(ulid, crockford_alphabet) {
     Ok(<<timestamp:unsigned-size(48), randomness:bits-size(80)>>) ->
       Ok(#(timestamp, randomness))
     _other -> Error("Error: Decoding failed. Is a valid ULID being supplied?")
-  }
-}
-
-/// Encode a bit_string using crockfords base32 encoding.
-fn encode_base32(bytes: BitArray) -> String {
-  // calculate how many bits to pad to make the bit_string divisible by 5
-  let to_pad =
-    bytes
-    |> bit_size()
-    |> int.modulo(5)
-    |> result.unwrap(5)
-    |> int.subtract(5)
-    |> int.absolute_value()
-    |> int.modulo(5)
-    |> result.unwrap(0)
-
-  encode_bytes(<<0:size(to_pad), bytes:bits>>)
-}
-
-/// Recursively grabs 5 bits and uses them as index in the crockford alphabet and concatinates them to a string.
-fn encode_bytes(binary: BitArray) -> String {
-  case binary {
-    <<index:unsigned-size(5), rest:bits>> -> {
-      crockford_alphabet
-      |> string.to_graphemes()
-      |> list.at(index)
-      |> result.unwrap("0")
-      |> string.append(encode_bytes(rest))
-    }
-    _ -> ""
-  }
-}
-
-/// Decode a string using crockford's base32 encoding.
-fn decode_base32(binary: String) -> Result(BitArray, Nil) {
-  let crockford_with_index =
-    crockford_alphabet
-    |> string.to_graphemes()
-    |> list.index_map(fn(x, i) { #(x, i) })
-
-  let bits =
-    binary
-    |> string.to_graphemes()
-    |> list.fold(<<>>, fn(acc, c) {
-      let index =
-        crockford_with_index
-        |> list.key_find(c)
-        |> result.unwrap(0)
-
-      <<acc:bits, index:5>>
-    })
-
-  let padding =
-    bits
-    |> bit_size()
-    |> int.modulo(8)
-    |> result.unwrap(0)
-
-  case bits {
-    <<0:size(padding), res:bits>> -> Ok(res)
-    _other -> Error(Nil)
   }
 }
 
@@ -211,9 +148,9 @@ fn generate_response_ulid(
     True -> {
       let randomness =
         state.last_random
-        |> decode_unsigned()
+        |> decode_unsigned
         |> int.add(1)
-        |> encode_unsigned()
+        |> encode_unsigned
 
       case from_parts(timestamp, randomness) {
         Ok(ulid) -> actor.send(reply, Ok(ulid))
