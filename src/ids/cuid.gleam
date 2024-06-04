@@ -6,11 +6,11 @@
 //// Slugs are also supported.
 ////
 
+import gleam/erlang.{Millisecond}
+import gleam/erlang/process.{type Subject}
 import gleam/int
 import gleam/list
-import gleam/erlang.{Millisecond}
 import gleam/otp/actor.{type Next, type StartResult}
-import gleam/erlang/process.{type Subject}
 import gleam/string
 
 /// The messages handled by the actor.
@@ -88,15 +88,15 @@ fn handle_msg(msg: Message, state: State) -> Next(Message, State) {
       let slug =
         format_id([
           timestamp()
-          |> string.slice(-2, 2),
+            |> string.slice(-2, 2),
           format_count(state.count)
-          |> string.slice(-4, 4),
+            |> string.slice(-4, 4),
           string.concat([
             string.slice(state.fingerprint, 0, 1),
             string.slice(state.fingerprint, -1, 1),
           ]),
           random_block()
-          |> string.slice(-2, 2),
+            |> string.slice(-2, 2),
         ])
       actor.send(reply, slug)
       actor.continue(State(..state, count: new_count(state.count)))
@@ -161,8 +161,7 @@ fn get_fingerprint() -> String {
 
   let hostid = { sum + list.length(localhost) + base } % operator
 
-  id
-  + hostid
+  id + hostid
   |> int.to_base36()
 }
 

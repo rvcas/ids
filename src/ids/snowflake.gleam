@@ -1,11 +1,11 @@
 //// A module for generating Snowflake IDs.
 
-import gleam/int
-import gleam/string
-import gleam/result
 import gleam/erlang
-import gleam/otp/actor.{type Next}
 import gleam/erlang/process.{type Subject}
+import gleam/int
+import gleam/otp/actor.{type Next}
+import gleam/result
+import gleam/string
 
 @external(erlang, "binary", "encode_unsigned")
 fn encode_unsigned(i: Int) -> BitArray
