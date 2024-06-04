@@ -2,11 +2,11 @@
 //// and unique string IDs.
 ////
 
-import gleam/string
 import gleam/bit_array
 import gleam/float
 import gleam/int
 import gleam/list
+import gleam/string
 
 /// The default alphabet used when generating NanoIDs.
 pub const default_alphabet: BitArray = <<
@@ -172,7 +172,9 @@ fn calculate_mask(alphabet_length: Int) -> Int {
 fn calculate_step(mask: Int, size: Int, alphabet_length: Int) -> Int {
   let step: Float =
     float.ceiling(
-      1.6 *. int.to_float(mask) *. int.to_float(size)
+      1.6
+      *. int.to_float(mask)
+      *. int.to_float(size)
       /. int.to_float(alphabet_length),
     )
   float.round(step)

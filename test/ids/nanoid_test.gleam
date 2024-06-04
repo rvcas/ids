@@ -1,10 +1,10 @@
-import gleeunit
-import ids/nanoid
-import gleeunit/should
-import gleam/list
-import gleam/string
 import gleam/bit_array
+import gleam/list
 import gleam/set.{type Set}
+import gleam/string
+import gleeunit
+import gleeunit/should
+import ids/nanoid
 
 pub fn main() {
   gleeunit.main()

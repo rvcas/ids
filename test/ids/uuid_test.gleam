@@ -1,7 +1,7 @@
-import gleeunit/should
-import ids/uuid
 import gleam/bit_array
 import gleam/erlang
+import gleeunit/should
+import ids/uuid
 
 pub fn gen_v4_test() {
   let assert Ok(id) = uuid.generate_v4()

@@ -1,9 +1,9 @@
-import ids/snowflake
-import gleeunit/should
-import gleam/string
+import gleam/erlang
 import gleam/int
 import gleam/list
-import gleam/erlang
+import gleam/string
+import gleeunit/should
+import ids/snowflake
 
 pub fn gen_test() {
   let machine_id = 1

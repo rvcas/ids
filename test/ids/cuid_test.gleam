@@ -1,9 +1,9 @@
-import gleeunit/should
-import ids/cuid
-import gleam/iterator.{Done, Next}
 import gleam/dict
+import gleam/iterator.{Done, Next}
 import gleam/pair
 import gleam/string
+import gleeunit/should
+import ids/cuid
 
 pub fn gen_test() {
   let assert Ok(channel) = cuid.start()
