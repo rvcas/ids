@@ -11,11 +11,18 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: erlef/setup-beam@v1
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🧰 Setup Beam
+        uses: erlef/setup-beam@v1
         with:
           otp-version: "26"
-          gleam-version: "1.2.0"
+          gleam-version: "1.2.1"
           rebar3-version: "3"
-      - run: gleam format --check src test
-      - run: gleam test
+
+      - name: 📝 Run fmt
+        run: gleam format --check src test
+
+      - name: 🧪 Run tests
+        run: gleam test
