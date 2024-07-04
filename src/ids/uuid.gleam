@@ -2,6 +2,7 @@
 ////
 //// The module currently supports UUID versions:
 //// - Version 4 (random)
+//// - Version 7 (with unix timestamp)
 ////
 
 import gleam/bit_array
