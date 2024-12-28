@@ -1,7 +1,7 @@
 //// Module for generating TypeIDs.
 
 import gleam/bit_array
-import gleam/regex
+import gleam/regexp
 import gleam/result
 import gleam/string
 import ids/base32
@@ -32,9 +32,9 @@ pub fn from_uuid(
   prefix prefix: String,
   uuid uuid: String,
 ) -> Result(String, String) {
-  let assert Ok(re) = regex.from_string("^([a-z]([a-z_]{0,61}[a-z])?)?$")
+  let assert Ok(re) = regexp.from_string("^([a-z]([a-z_]{0,61}[a-z])?)?$")
 
-  case regex.check(re, prefix) {
+  case regexp.check(re, prefix) {
     True -> {
       let p = case prefix {
         "" -> ""

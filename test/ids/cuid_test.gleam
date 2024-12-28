@@ -1,7 +1,7 @@
 import gleam/dict
-import gleam/iterator.{Done, Next}
 import gleam/pair
 import gleam/string
+import gleam/yielder.{Done, Next}
 import gleeunit/should
 import ids/cuid
 
@@ -55,13 +55,13 @@ const max: Int = 100_000
 
 fn check_collision(func: fn() -> String) -> Bool {
   start
-  |> iterator.unfold(with: fn(acc) {
+  |> yielder.unfold(with: fn(acc) {
     case acc < max {
       False -> Done
       True -> Next(element: func(), accumulator: acc + 1)
     }
   })
-  |> iterator.fold(from: #(dict.new(), True), with: fn(acc, id) {
+  |> yielder.fold(from: #(dict.new(), True), with: fn(acc, id) {
     let #(id_dict, flag) = acc
 
     case flag {
