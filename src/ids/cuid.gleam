@@ -131,7 +131,7 @@ fn timestamp() -> String {
 fn format_count(num: Int) -> String {
   num
   |> int.to_base36()
-  |> string.pad_left(to: block_size, with: "0")
+  |> string.pad_start(to: block_size, with: "0")
 }
 
 type CharList
@@ -171,5 +171,5 @@ fn rand_uniform(n: Int) -> Int
 fn random_block() -> String {
   rand_uniform(discrete_values - 1)
   |> int.to_base36()
-  |> string.pad_left(to: block_size, with: "0")
+  |> string.pad_start(to: block_size, with: "0")
 }

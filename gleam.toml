@@ -3,12 +3,14 @@ version = "0.13.0"
 licences = ["Apache-2.0"]
 description = "✨ Unique IDs for Gleam"
 repository = { type = "github", user = "rvcas", repo = "ids" }
-gleam = ">= 0.32.2"
+gleam = ">= 1.1.0"
 
 [dependencies]
 gleam_stdlib = ">= 0.34.0 and < 2.0.0"
 gleam_otp = "~> 0.10"
 gleam_erlang = "~> 0.25"
+gleam_regexp = ">= 1.0.0 and < 2.0.0"
 
 [dev-dependencies]
 gleeunit = "~> 1.0"
+gleam_yielder = ">= 1.1.0 and < 2.0.0"
